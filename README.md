@@ -4,5 +4,4 @@ This repository contains demo playbooks and roles used in our [Ansible Automatio
 
 Please note that this content is meant for educational purposes and might contain errors or challenges.
 
-----
-![Red Hat Ansible Automation](images/logo-rh-ansible-automation.png)
+
