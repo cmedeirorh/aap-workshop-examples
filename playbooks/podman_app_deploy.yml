@@ -1,0 +1,31 @@
+---
+- hosts: all
+  become: yes
+ 
+  tasks:
+  - name: Install podman and firewald packages
+    ansible.builtin.package:
+      name:
+        - podman
+        - firewalld
+      state: present
+  
+  - name: Deploy application using podman
+    containers.podman.podman_container:
+      name: "{{ app_name }}"
+      image: "{{ app_image }}"
+      ports:
+        - "{{ app_ports }}" # 80:8080
+
+  - name: Enable firewald service to start on boot up
+    ansible.builtin.systemd:
+      name: firewalld
+      state: started
+      enabled: true
+    
+  - name: Create firewall rule for application
+    ansible.posix.firewalld:
+      service: http
+      permanent: true
+      state: enabled
+      immediate: true
