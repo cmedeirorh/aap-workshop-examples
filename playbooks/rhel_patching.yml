@@ -7,6 +7,7 @@
     ansible.builtin.dnf:
       name: '*'
       state: latest
+      exclude: '{{ excluded_pks }}'
       update_cache: yes
       update_only: yes
     register: dnf_update_status
