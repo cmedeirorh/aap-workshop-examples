@@ -29,7 +29,7 @@
 
   - name: Copy a custom index.html file
     ansible.builtin.copy:
-      src: index.html
+      src: ../files/index.html
       dest: /var/www/html/index.html
 
   - name: Reload httpd service if required
