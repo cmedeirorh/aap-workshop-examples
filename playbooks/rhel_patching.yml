@@ -11,7 +11,7 @@
       update_only: yes
     register: dnf_update_status
   
-  - name: check to see if we need a reboot
+  - name: Check to see if we need a reboot
     ansible.builtin.command: needs-restarting -r
     register: result
     ignore_errors: yes
