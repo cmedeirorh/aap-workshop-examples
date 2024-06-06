@@ -4,3 +4,4 @@ collections:
   - name: vmware.vmware_rest
   - name: awx.awx
   - name: containers.podman
+  - name: devsec.hardening
