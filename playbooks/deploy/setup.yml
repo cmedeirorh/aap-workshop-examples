@@ -1,0 +1,19 @@
+---
+user_message:
+  - The following variables are required: "host","user","password"
+
+controller_components:
+  - projects
+  - credential_types
+  - credentials
+  - inventory_sources
+  - job_templates  
+
+controller_credentials:
+  - name: VCenter Inventory
+    credential_type: VMware vCenter
+    organization: Default
+    inputs:
+      host: REPLACEME
+      username: REPLACEME
+      password: REPLACEME
