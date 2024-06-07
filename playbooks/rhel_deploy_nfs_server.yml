@@ -2,14 +2,34 @@
 - name: Install and configure NFS Server
   hosts: all
   become: true
-#  vars:
-#    nfs_server_exports:
-#      - /var/lib/nfs1 10.95.95.2 (rw,anonuid=1000,anongid=1000)
+ 
   tasks:
     - name: Create folder to share via NFS
-    ansible.builtin.file:
-        path: "{{ nfs_server_exports[0] }}"
+      ansible.builtin.file:
+        path: "{{ nfs_folder }}"
         state: directory
         mode: '0777'
-  roles:
-    - epfl_si.rhel.nfs_server
+        
+    - name: Install NFS utils
+      ansible.builtin.package:
+        name: nfs-utils
+        state: present
+    - name: Enable and activate the service
+      ansible.builtin.systemd:
+        name: nfs-server.service
+        enabled: true
+        state: started
+        
+    - name: Update Exports configuration file
+      ansible.builtin.template:
+        src: files/exports.j2
+        dest: /etc/exports.d/ansible_managed.exports
+        owner: root
+        group: root
+        mode: '0644'
+      register: config_exports
+
+    - name: Reload nfs exports
+      ansible.builtin.command:
+        cmd: exportfs -a    
+      when: config_exports.change
