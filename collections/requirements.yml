@@ -1,7 +1,9 @@
 ---
 collections:
-  - name: community.vmware
-  - name: vmware.vmware_rest
-  - name: awx.awx
-  - name: containers.podman
-  - name: devsec.hardening
+  - community.vmware
+  - vmware.vmware_rest
+  - awx.awx
+  - containers.podman
+  - devsec.hardening
+  - ansible.posix
+  - fedora.linux_system_roles
