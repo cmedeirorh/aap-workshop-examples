@@ -8,3 +8,11 @@ collections:
   - ansible.posix
   - fedora.linux_system_roles
   - epfl_si.rhel
+  - ansible.controller
+  - infra.ah_configuration
+  - infra.controller_configuration
+  - redhat_cop.controller_configuration
+  - community.general
+  - ansible.windows
+  - chocolatey.chocolatey
+  - community.windows
