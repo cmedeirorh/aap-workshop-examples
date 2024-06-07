@@ -3,4 +3,4 @@
   hosts: all
    
   roles:
-    - linux-system-roles.postgresql
+    - fedora.linux_system_roles.postgresql
