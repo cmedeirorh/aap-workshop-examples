@@ -5,6 +5,11 @@
 #  vars:
 #    nfs_server_exports:
 #      - /var/lib/nfs1 10.95.95.2 (rw,anonuid=1000,anongid=1000)
-
+  tasks:
+    - name: Create folder to share via NFS
+    ansible.builtin.file:
+        path: "{{ nfs_folder }}"
+        state: directory
+        mode: '0777'
   roles:
     - epfl_si.rhel.nfs_server
