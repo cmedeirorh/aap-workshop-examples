@@ -8,7 +8,7 @@
   tasks:
     - name: Create folder to share via NFS
     ansible.builtin.file:
-        path: "{{ nfs_folder }}"
+        path: "{{ nfs_server_exports[0] }}"
         state: directory
         mode: '0777'
   roles:
