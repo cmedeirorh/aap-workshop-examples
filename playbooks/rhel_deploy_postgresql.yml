@@ -1,0 +1,6 @@
+---
+- name: Manage postgres using Role "https://github.com/linux-system-roles/postgresql"
+  hosts: all
+   
+  roles:
+    - linux-system-roles.postgresql
