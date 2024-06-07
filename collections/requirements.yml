@@ -7,3 +7,4 @@ collections:
   - devsec.hardening
   - ansible.posix
   - fedora.linux_system_roles
+  - epfl_si.rhel
