@@ -28,9 +28,7 @@
         owner: root
         group: root
         mode: '0644'
-      register: config_exports
-
+     
     - name: Reload nfs exports
       ansible.builtin.command:
         cmd: exportfs -a    
-      when: config_exports.change
