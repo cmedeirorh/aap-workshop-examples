@@ -10,7 +10,7 @@ controller_components:
   - job_templates  
 
 controller_credentials:
-  - name: VCenter Inventory
+  - name: VCenter Inventory test
     credential_type: VMware vCenter
     organization: Default
     inputs:
