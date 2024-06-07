@@ -11,6 +11,6 @@
         organization: Default
         state: present
         inputs:
-          host: REPLACEME
-          username: REPLACEME
-          password: REPLACEME
+          host: "{{ vcenter_host }}"
+          username: "{{ vcenter_username }}"
+          password: "{{ vcenter_password }}"
