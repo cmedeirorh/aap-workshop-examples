@@ -1,19 +1,16 @@
 ---
-user_message:
-  - The following variables are required: "host","user","password"
+- name: Setup Controller for Workshop
+  hosts: all
+  gather_facts: false
 
-controller_components:
-  - projects
-  - credential_types
-  - credentials
-  - inventory_sources
-  - job_templates  
-
-controller_credentials:
-  - name: VCenter Inventory test
-    credential_type: VMware vCenter
-    organization: Default
-    inputs:
-      host: REPLACEME
-      username: REPLACEME
-      password: REPLACEME
+  tasks:
+    - name: Create VCenter Inventory test
+      ansible.controller.credential:
+        name: "VCenter Inventory test"
+        credential_type: "VMware vCenter"
+        organization: Default
+        state: present
+        inputs:
+          host: REPLACEME
+          username: REPLACEME
+          password: REPLACEME
