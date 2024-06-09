@@ -33,3 +33,7 @@
       permanent: true
       state: enabled
       immediate: true
+      
+  - name: Print the gateway for each host when defined
+    ansible.builtin.debug:
+      msg: The application and be accessed on this url:http://{{ public_dns_name }}
