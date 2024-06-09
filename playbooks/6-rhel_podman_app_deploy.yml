@@ -1,10 +1,10 @@
 ---
 - hosts: all
   become: true
-  vars:
-    - app_name: "tasks-app"
-    - app_image: "quay.io/cmedeiro/tasks-app:latest"
-    - app_ports: "80:8080"
+#  vars:
+#    - app_name: "tasks-app"
+#    - app_image: "quay.io/cmedeiro/tasks-app:latest"
+#    - app_ports: "80:8080"
  
   tasks:
   - name: Install podman and firewald packages
