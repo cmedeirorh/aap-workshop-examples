@@ -1,0 +1,28 @@
+- name: Install IIS
+  hosts: windows
+  connection: winrm
+
+  tasks:
+  - name: Install IIS (Web-Server only)
+    ansible.windows.win_feature:
+      name: Web-Server
+      state: present
+    register: win_feature
+
+  - name: Start IIS service
+    ansible.windows.win_service:
+      name: W3Svc
+      state: started
+       
+  - name: Create website index.html
+    ansible.windows.win_copy:
+      content: "{{ iis_test_message }}"
+      dest: C:\Inetpub\wwwroot\index.html
+     
+  - name: Reboot if installing Web-Server feature requires it
+    ansible.windows.win_reboot:
+    when: win_feature.reboot_required
+
+  - name: Show website address
+    ansible.builtin.debug:
+      msg: http://{{ ansible_host }}
