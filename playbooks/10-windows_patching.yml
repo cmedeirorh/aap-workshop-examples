@@ -1,0 +1,30 @@
+- name: Run Updates on Windows
+  hosts: windows
+  gather_facts: no
+  
+  tasks:
+  - name: Windows update
+    ansible.windows.win_updates:
+      category_names:
+        - SecurityUpdates
+        - CriticalUpdates
+        - ServicePacks
+        - UpdateRollups
+        - Application
+        - Connectors
+        - DefinitionUpdates
+        - DeveloperKits
+        - FeaturePacks
+        - Guidance
+        - Tools
+        - Updates
+      reboot: yes
+      reboot_timeout: 800
+    register: update_results
+    
+   - name: Report update results
+      debug:
+        msg: |
+          {% for k in update_results.updates %}
+          {{ k.title }}
+          {% endfor %}
