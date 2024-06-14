@@ -25,4 +25,4 @@
     
    - name: Report update results
       ansible.builtin.debug:
-        msg: {{ update_results.updates }}
+        msg: "{{ update_results.updates }}"
