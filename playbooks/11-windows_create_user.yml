@@ -1,15 +1,16 @@
 ---
 - name: Add a user to a Windows
-  hosts: all
+  hosts: windows
   gather_facts: false
+  
   tasks:
     - name: Add User
       ansible.windows.win_user:
-        name: "{{ win_user_name }}"
-        password: "{{ win_user_password }}"
-        fullname: "{{ win_user_fullname }}"
-        description: "{{ win_user_description }}"
-        groups: "{{ win_user_groups }}"
+        name: "{{ user_name }}"
+        password: "{{ user_password }}"
+        fullname: "{{ user_fullname }}"
+        description: "{{ user_description }}"
+        groups: "{{ user_groups }}"
         state: present
       register: result
       
