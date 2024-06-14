@@ -28,4 +28,7 @@
     - name: Verify installation result
       ansible.builtin.debug:
         msg: "{{ oneagent_install_result }}"
-    msg: "{{ oneagent_install_result }}"
+
+    - name: Reboot if needed
+      ansible.windows.win_reboot:
+      when: oneagent_install_result.reboot_required
