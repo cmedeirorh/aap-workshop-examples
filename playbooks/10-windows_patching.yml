@@ -24,7 +24,4 @@
     
    - name: Report update results
       ansible.builtin.debug:
-        msg: |
-          {% for k in update_results.updates %}
-          {{ k.title }}
-          {% endfor %}
+        msg: {{ update_results.updates }}
