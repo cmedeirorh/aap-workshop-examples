@@ -2,5 +2,12 @@
 - name: Deploy Dynatrace OneAgent
   hosts: windows
 
-  roles:
-    - dynatrace.oneagent
+  tasks:
+    - name: Download OneAgent installation file
+      ansible.windows.win_get_url:
+        url: {{ oneagent_url }}
+        dest: C:\WINDOWS\Temp\
+    
+#  roles:
+#    - name: Install agent using role
+#      dynatrace.oneagent:
