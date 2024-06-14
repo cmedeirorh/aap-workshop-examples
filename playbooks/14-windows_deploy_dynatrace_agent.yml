@@ -3,5 +3,4 @@
   hosts: windows
 
   roles:
-    - name: Install agent using role
-      dynatrace.oneagent:
+    - dynatrace.oneagent
