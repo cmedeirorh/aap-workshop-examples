@@ -5,9 +5,17 @@
   tasks:
     - name: Download OneAgent installation file
       ansible.windows.win_get_url:
-        url: {{ oneagent_url }}
-        dest: C:\WINDOWS\Temp\
-    
+        url: {{ agent_url }}
+        dest: {{ agent_dest }}
+        
+    - name: Obtain information about a folder
+      ansible.windows.win_stat:
+        path: {{ agent_dest }}
+      register: file_info
+
+    - name: Print file info
+      ansible.builtin.debug:
+        var: file_info
 #  roles:
 #    - name: Install agent using role
 #      dynatrace.oneagent:
