@@ -5,12 +5,12 @@
   tasks:
     - name: Download OneAgent installation file
       ansible.windows.win_get_url:
-        url: {{ agent_url }}
-        dest: {{ agent_dest }}
+        url: "{{ oneagent_download_url }}"
+        dest: "{{ oneagent_download_dir }}"
         
     - name: Obtain information about a folder
       ansible.windows.win_stat:
-        path: {{ agent_dest }}
+        path: "{{ oneagent_download_dir }}"
       register: file_info
 
     - name: Print file info
