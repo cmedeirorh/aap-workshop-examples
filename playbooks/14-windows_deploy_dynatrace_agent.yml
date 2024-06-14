@@ -1,0 +1,6 @@
+---
+- name: Deploy Dynatrace OneAgent
+  hosts: windows
+
+  roles:
+    - dynatrace.oneagent
