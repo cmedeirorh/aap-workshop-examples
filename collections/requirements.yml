@@ -16,3 +16,4 @@ collections:
   - chocolatey.chocolatey
   - community.windows
   - ansible.windows
+  - dynatrace.oneagent
