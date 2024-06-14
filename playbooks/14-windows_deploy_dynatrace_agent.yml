@@ -1,6 +1,31 @@
 ---
 - name: Deploy Dynatrace OneAgent
   hosts: windows
+  
+  tasks:
+    - name: Ensure Download directory exists
+      ansible.windows.win_file:
+        path: "{{ oneagent_download_path }}"
+        state: directory
 
-  roles:
-    - dynatrace.oneagent
+    - name: Download OneAgent installation file
+      ansible.windows.win_get_url:
+        url: "{{ oneagent_installer_url }}"
+        dest: "{{ oneagent_installer_path }}"
+        headers:
+          Authorization: Api-Token {{ oneagent_paas_token }}
+      ignore_errors: true
+      register: oneagent_download_result
+
+    - name: Install Dynatrace OneAgent
+      ansible.windows.win_package:
+        path: "{{ oneagent_installer_path }}"
+        arguments: "{{ oneagent_install_args | join(' ') }} --quiet"
+        state: present
+      ignore_errors: true
+      register: oneagent_install_result
+
+    - name: Verify installation result
+      ansible.builtin.debug:
+        msg: "{{ oneagent_install_result }}"
+    msg: "{{ oneagent_install_result }}"
