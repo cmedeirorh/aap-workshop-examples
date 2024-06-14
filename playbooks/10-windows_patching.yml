@@ -1,3 +1,4 @@
+---
 - name: Run Updates on Windows
   hosts: windows
   gather_facts: no
