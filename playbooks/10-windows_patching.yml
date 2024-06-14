@@ -23,7 +23,7 @@
     register: update_results
     
    - name: Report update results
-      debug:
+      ansible.builtin.debug:
         msg: |
           {% for k in update_results.updates %}
           {{ k.title }}
