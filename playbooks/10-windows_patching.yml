@@ -23,6 +23,6 @@
       reboot_timeout: 800
     register: update_results
     
-   - name: Report update results
-      ansible.builtin.debug:
-        msg: "{{ update_results.updates }}"
+  - name: Report update results
+    ansible.builtin.debug:
+      msg: "{{ update_results.updates }}"
