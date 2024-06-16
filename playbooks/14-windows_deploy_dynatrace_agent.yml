@@ -23,6 +23,7 @@
         arguments: "{{ oneagent_install_args | join(' ') }} --quiet"
         state: present
       ignore_errors: true
+      wait_for_children: true
       register: oneagent_install_result
 
     - name: Verify installation result
