@@ -1,4 +1,4 @@
-- name: Linux hardening
+- name: Linux hardening (selected tasks)
   hosts: all
   gather_facts: yes
 
