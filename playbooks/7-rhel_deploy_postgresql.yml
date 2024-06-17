@@ -1,6 +1,7 @@
 ---
 - name: Manage postgres using Role "https://github.com/linux-system-roles/postgresql"
   hosts: all
+  become: yes
    
   roles:
     - fedora.linux_system_roles.postgresql
