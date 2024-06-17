@@ -1,6 +1,8 @@
 ---
-- hosts: all
+- name: Deploy App on RHEL Using Podman
+  hosts: all
   become: true
+  
 #  vars:
 #    - app_name: "tasks-app"
 #    - app_image: "quay.io/cmedeiro/tasks-app:latest"
