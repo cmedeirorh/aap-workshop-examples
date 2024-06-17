@@ -1,7 +1,7 @@
 ---
 - name: Linux hardening (selected tasks)
   hosts: all
-  gather_facts: yes
+  become: yes
 
   tasks:
     - name: Ensure firewall package is installed
