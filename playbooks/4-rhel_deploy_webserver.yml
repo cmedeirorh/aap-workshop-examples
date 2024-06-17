@@ -1,5 +1,6 @@
 ---
-- hosts: web
+- name: Deploy Webserver (Apache) on RHEL
+  hosts: web
   become: yes
  
   tasks:
