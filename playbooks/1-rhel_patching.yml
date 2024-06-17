@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: Update all packages on RHEL
+  hosts: all
   become: yes
   
   tasks:
