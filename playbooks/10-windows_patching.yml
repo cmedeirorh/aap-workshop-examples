@@ -22,6 +22,8 @@
       reboot: yes
       reboot_timeout: 800
     register: update_results
+    retries: 3
+    until: update_results is succeeded
     
   - name: Report update results
     ansible.builtin.debug:
