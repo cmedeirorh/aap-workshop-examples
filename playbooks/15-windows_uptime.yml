@@ -4,15 +4,15 @@
   
   tasks:
     - name: Install PendingReboot PowerShell module
-      win_psmodule:
+      community.windows.win_psmodule:
         name: PendingReboot
         
     - name: Execute command to test pending reboot
-      win_shell: Test-PendingReboot -Detailed
+      community.windows.win_shell: Test-PendingReboot -Detailed
       register: command
       changed_when: false
       check_mode: false
       
     - name: Print errors if any
-      debug:
+      ansible.builtin.debug:
         var: command
