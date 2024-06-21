@@ -3,6 +3,16 @@
   hosts: windows
   
   tasks:
-    - name: Get Uptime
-      ansible.windows.win_reboot:
-      when: rebootrequired.stdout.find("true") != -1
+    - name: Install PendingReboot PowerShell module
+      win_psmodule:
+        name: PendingReboot
+        
+    - name: Execute command to test pending reboot
+      win_shell: Test-PendingReboot -Detailed
+      register: command
+      changed_when: false
+      check_mode: false
+      
+    - name: Print errors if any
+      debug:
+        var: command
