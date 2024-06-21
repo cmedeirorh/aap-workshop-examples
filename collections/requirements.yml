@@ -17,4 +17,3 @@ collections:
   - community.windows
   - ansible.windows
   - dynatrace.oneagent
-  - community.windows
