@@ -5,4 +5,4 @@
   tasks:
     - name: Get Uptime
       ansible.windows.win_reboot:
-        if_pending: true
+      when: rebootrequired.stdout.find("true") != -1
