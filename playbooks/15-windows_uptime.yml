@@ -6,6 +6,9 @@
     - name: Install PendingReboot PowerShell module
       community.windows.win_psmodule:
         name: PendingReboot
+        skip_publisher_check: yes
+        state: present
+        accept_license: true
         
     - name: Execute command to test pending reboot
       community.windows.win_shell: Test-PendingReboot -Detailed
