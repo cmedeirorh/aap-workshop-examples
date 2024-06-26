@@ -1,2 +1,2 @@
 {{ ansible_managed | comment }}
-{{ nfs_folder }} {{ subnet }}(rw)
+{{ nfs_folder }} {{ (ansible_default_ipv4.address + '/' + ansible_default_ipv4.netmask) | ipaddr('prefix') }}(rw)
