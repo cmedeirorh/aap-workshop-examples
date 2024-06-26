@@ -6,7 +6,7 @@
 #  vars:
 #    - app_name: "tasks-app"
 #    - app_image: "quay.io/cmedeiro/tasks-app:latest"
-#    - app_ports: "80:8080"
+#    - app_ports: "8080:8080"
  
   tasks:
   - name: Install podman and firewald packages
@@ -21,7 +21,7 @@
       name: "{{ app_name }}"
       image: "{{ app_image }}"
       ports:
-        - "{{ app_ports }}" # 80:8080
+        - "{{ app_ports }}" 
 
   - name: Enable firewald service to start on boot up
     ansible.builtin.systemd:
