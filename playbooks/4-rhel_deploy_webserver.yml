@@ -40,4 +40,4 @@
       
   - name: Print the gateway for each host
     ansible.builtin.debug:
-      msg: The application and be accessed on this url http://{{ public_dns_name }}
+      msg: The application and be accessed on this url http://{{ ansible_host }}
