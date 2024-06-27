@@ -6,7 +6,7 @@
 #  vars:
 #    - app_name: "tasks-app"
 #    - app_image: "quay.io/cmedeiro/tasks-app:latest"
-#    - app_ports: "8080:8080"
+#    - app_ports: "80:8080"
  
   tasks:
   - name: Install podman and firewald packages
@@ -31,7 +31,7 @@
     
   - name: Create firewall rule for application
     ansible.posix.firewalld:
-      port: 8080/tcp
+      service: http
       permanent: true
       state: enabled
       immediate: true
