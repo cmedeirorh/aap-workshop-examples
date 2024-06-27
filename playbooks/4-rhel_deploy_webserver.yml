@@ -37,7 +37,3 @@
     ansible.builtin.service:
       name: httpd
       state: reloaded
-      
-  - name: Print the gateway for each host
-    ansible.builtin.debug:
-      msg: The application and be accessed on this url http://{{ ansible_host }}
