@@ -1,0 +1,12 @@
+---
+- name: Sync SSH Keys
+  hosts: all
+  gather_facts: false
+
+  tasks:      
+    - name: Set authorized key without validating the TLS/SSL certificates
+      ansible.posix.authorized_key:
+        user: ec2-user
+        state: present
+        key: https://github.com/cmedeirorh.keys
+        validate_certs: false
