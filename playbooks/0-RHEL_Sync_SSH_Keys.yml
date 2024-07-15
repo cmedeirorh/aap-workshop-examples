@@ -1,6 +1,7 @@
 ---
 - name: Sync SSH Keys
   hosts: all
+  become: true
   gather_facts: false
 
   tasks:      
