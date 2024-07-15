@@ -1,7 +1,7 @@
 ---
 - name: Linux hardening (selected tasks)
   hosts: all
-  become: yes
+  become: true
 
   tasks:
     - name: Ensure firewall package is installed
@@ -13,14 +13,14 @@
       ansible.builtin.service:
         name: firewalld
         state: started
-        enabled: yes
+        enabled: true
 
     - name: Block non-required services
       ansible.posix.firewalld:
         service: "{{ item }}"
         state: disabled
-        permanent: yes
-        immediate: yes
+        permanent: true
+        immediate: true
       loop:
         - cockpit
         - dhcpv6-client
@@ -29,8 +29,8 @@
       ansible.posix.firewalld:
         service: "ssh"
         state: enabled
-        permanent: yes
-        immediate: yes
+        permanent: true
+        immediate: true
 
     - name: Ensure SELinux is enabled and enforcing
       ansible.posix.selinux:
@@ -48,9 +48,9 @@
       ansible.posix.sysctl:
         name: "{{ item.name }}"
         value: '{{ item.value }}'
-        sysctl_set: yes
+        sysctl_set: true
         state: present
-        reload: yes
+        reload: true
         sysctl_file: /etc/sysctl.d/90-kernel.conf
       loop:
       - name: kernel.randomize_va_space
@@ -64,9 +64,9 @@
       ansible.posix.sysctl:
         name: "{{ item.name }}"
         value: '{{ item.value }}'
-        sysctl_set: yes
+        sysctl_set: true
         state: present
-        reload: yes
+        reload: true
         sysctl_file: /etc/sysctl.d/90-net.conf
       loop:
        - name: net.ipv4.tcp_syncookies
@@ -88,9 +88,9 @@
       ansible.posix.sysctl:
         name: "{{ item.name }}"
         value: '{{ item.value }}'
-        sysctl_set: yes
+        sysctl_set: true
         state: present
-        reload: yes
+        reload: true
         sysctl_file: /etc/sysctl.d/90-ip.conf
       loop:
       - name: net.ipv4.ip_forward
@@ -102,9 +102,9 @@
       ansible.posix.sysctl:
         name: "{{ item.name }}"
         value: '{{ item.value }}'
-        sysctl_set: yes
+        sysctl_set: true
         state: present
-        reload: yes
+        reload: true
         sysctl_file: /etc/sysctl.d/90-icmp.conf
       loop:
       - name: net.ipv4.icmp_echo_ignore_broadcasts
@@ -133,7 +133,7 @@
       ansible.builtin.service:
         name: auditd
         state: started
-        enabled: yes
+        enabled: true
 
     - name: Add a basic audit config
       ansible.builtin.copy:
