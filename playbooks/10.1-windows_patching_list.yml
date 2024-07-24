@@ -11,3 +11,7 @@
   - name: Report results
     ansible.builtin.debug:
       msg: "{{ search_results }}"
+      
+  - name: Store info as facts
+    ansible.builtin.set_fact:
+      update_list: "{{ search_results }}"
