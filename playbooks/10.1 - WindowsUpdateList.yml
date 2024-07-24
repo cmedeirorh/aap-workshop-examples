@@ -1,0 +1,14 @@
+---
+- name: Run Updates on Windows
+  hosts: windows
+  gather_facts: no
+  
+  tasks:
+  - name: Windows Update List
+    ansible.windows.win_updates:
+      state: searched
+    register: search_results
+    
+  - name: Report results
+    ansible.builtin.debug:
+      msg: "{{ search_results }}"
