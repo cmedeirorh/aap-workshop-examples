@@ -1,8 +1,7 @@
 ---
 - name: Run Updates on Windows
   hosts: windows
-  gather_facts: no
-  
+    
   tasks:
   - name: Windows Update List
     ansible.windows.win_updates:
