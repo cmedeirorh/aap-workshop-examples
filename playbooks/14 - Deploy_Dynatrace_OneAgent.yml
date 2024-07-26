@@ -1,8 +1,0 @@
----
-- name: Deploy Dynatrace OneAgent
-  hosts: windows
-  
-  tasks:
-    - name: Import Dynatrace OneAgent role
-      ansible.builtin.import_role:
-        name: dynatrace.oneagent
