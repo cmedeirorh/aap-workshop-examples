@@ -26,6 +26,10 @@
   - name: Create a ServiceNow change request
     delegate_to: localhost
     servicenow.itsm.incident:
+      instance:
+          host: "{{ snow_instance }}"
+          username: "{{ snow_username }}"
+          password: "{{ snow_password }}""
       state: new
       caller: "ansible"
       impact: medium
