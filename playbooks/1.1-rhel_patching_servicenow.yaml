@@ -2,8 +2,7 @@
 - name: Update all packages on RHEL
   hosts: all
   become: true
-  gather_facts: false
-  
+   
   tasks:
   - name: Update all installed packages using DNF module
     ansible.builtin.dnf:
@@ -20,11 +19,6 @@
     register: result
     ignore_errors: true
   
-  - name: Reboot when required
-    ansible.builtin.reboot:
-      msg: "Reboot initiated by Ansible"
-    when: result.rc == 1
-
   - name: Create a ServiceNow change request
     servicenow.itsm.change_request:
       instance:
@@ -38,11 +32,11 @@
       priority: high
       risk: low
       impact: medium
-      short_description: "System {{ inventory_hostname }} needs to be patched."
-      description: "The following updated. \n {{ dnf_update_status }}"
+      short_description: 'System/node "{{ ansible_host }}" requires patching.'
+      description: "The following packages require update: \n {{ dnf_update_status }}"
     register: new_ticket
-    when: not dnf_download
-    
+    when: (dnf_update_status is changed) and (dnf_download == "True")
+
   - name: Close a ServiceNow change request
     servicenow.itsm.change_request:
       instance:
@@ -51,8 +45,13 @@
           password: "{{ sn_password }}"
       state: closed
       close_code: "successful"
-      close_notes: "Packages Updates:  {{ dnf_update_status }}"
+      close_notes: 'Packages Updated on system/node "{{ ansible_host }}":  {{ dnf_update_status }}'
       assignment_group: Software
       number: "{{ sn_number }}"
     register: updated_ticket
-    when: dnf_download
+    when: (dnf_update_status is changed) and (dnf_download == "False")
+
+  - name: Reboot when required
+    ansible.builtin.reboot:
+      msg: "Reboot initiated by Ansible"
+    when: result.rc == 1    
