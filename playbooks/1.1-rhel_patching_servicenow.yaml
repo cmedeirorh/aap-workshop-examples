@@ -37,7 +37,9 @@
       risk: low
       impact: medium
       short_description: "System Patched: {{ inventory_hostname }}"
-      description: "This system has been fully updated. {{ dnf_update_status }}"
+      description: >-
+        "This system has been fully updated."
+        "{{ dnf_update_status }}"
     register: new_ticket
     
   - name: Print details from previous task
