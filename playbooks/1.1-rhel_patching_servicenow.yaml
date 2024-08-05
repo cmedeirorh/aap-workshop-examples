@@ -41,7 +41,7 @@
       short_description: "System {{ inventory_hostname }} needs to be patched."
       description: "The following updated. \n {{ dnf_update_status }}"
     register: new_ticket
-    when: dnf_update_status is changed and not dnf_download
+    when: not dnf_download
     
   - name: Close a ServiceNow change request
     servicenow.itsm.change_request:
@@ -55,4 +55,4 @@
       assignment_group: Software
       number: "{{ sn_number }}"
     register: updated_ticket
-    when: dnf_update_status is changed and is dnf_download
+    when: dnf_download
