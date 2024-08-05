@@ -37,6 +37,21 @@
     register: new_ticket
     when: (dnf_update_status is changed) and (dnf_download == "True")
 
+  - name: Move ServiceNow change request status
+    servicenow.itsm.change_request:
+      instance:
+          host: "{{ sn_instance }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
+      state: "{{ item }}"
+      assignment_group: "Software"
+      number: "{{ sn_number }}"
+    loop:
+      - scheduled
+      - implement
+      - review
+    when: (dnf_update_status is changed) and (sn_number is defined)
+      
   - name: Close a ServiceNow change request
     servicenow.itsm.change_request:
       instance:
@@ -46,7 +61,7 @@
       state: closed
       close_code: "successful"
       close_notes: 'Packages Updated on system/node "{{ ansible_host }}":  {{ dnf_update_status }}'
-      assignment_group: Software
+      assignment_group: "Software"
       number: "{{ sn_number }}"
     register: updated_ticket
     when: (dnf_update_status is changed) and (dnf_download == "False")
