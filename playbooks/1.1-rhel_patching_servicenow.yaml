@@ -24,12 +24,11 @@
     when: result.rc == 1
 
   - name: Create a ServiceNow change request
-    delegate_to: localhost
     servicenow.itsm.incident:
       instance:
-          host: "{{ snow_instance }}"
-          username: "{{ snow_username }}"
-          password: "{{ snow_password }}"
+          host: "{{ sn_instance }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
       state: new
       caller: "ansible"
       impact: medium
