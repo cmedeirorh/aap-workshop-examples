@@ -34,7 +34,7 @@
       caller: "ansible"
       impact: medium
       urgency: medium
-      short_description: "System Patch: {{ inventory_hostname }}"
+      short_description: "System Patched: {{ inventory_hostname }}"
       description: "{{ dnf_update_status }}"
     register: new_ticket
     
