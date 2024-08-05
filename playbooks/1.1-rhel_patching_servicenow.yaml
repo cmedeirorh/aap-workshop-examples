@@ -24,17 +24,19 @@
     when: result.rc == 1
 
   - name: Create a ServiceNow change request
-    servicenow.itsm.incident:
+    servicenow.itsm.change_request:
       instance:
           host: "{{ sn_instance }}"
           username: "{{ sn_username }}"
           password: "{{ sn_password }}"
       state: new
-      caller: "ansible"
+      type: standard
+      requested_by: "ansible"
+      priority: high
+      risk: low
       impact: medium
-      urgency: medium
       short_description: "System Patched: {{ inventory_hostname }}"
-      description: "{{ dnf_update_status }}"
+      description: "This system has been fully updated. {{ dnf_update_status }}"
     register: new_ticket
     
   - name: Print details from previous task
