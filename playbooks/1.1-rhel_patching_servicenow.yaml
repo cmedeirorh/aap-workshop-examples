@@ -30,6 +30,7 @@
           username: "{{ sn_username }}"
           password: "{{ sn_password }}"
       state: new
+      category: system_software
       type: standard
       requested_by: "ansible"
       priority: high
