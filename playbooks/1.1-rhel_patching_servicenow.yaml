@@ -42,7 +42,6 @@
       description: "This system has been fully updated. \n {{ dnf_update_status }}"
     register: new_ticket
     
-  - name: Set Change Request Number as Fact
-    ansible.builtin.set_stats:
-      data:
-        latest_change_request: "{{ new_ticket }}"
+  - name: Get Change Request Number
+    ansible.builtin.debug:
+      var: " {{ new_ticket.record.number }}"
