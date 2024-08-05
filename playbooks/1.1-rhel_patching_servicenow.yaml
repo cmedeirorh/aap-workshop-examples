@@ -12,6 +12,7 @@
       # exclude: '{{ excluded_pks }}'
       update_cache: true
       update_only: true
+      download_only: "{{ dnf_download }}"
     register: dnf_update_status
   
   - name: Check to see if we need a reboot
