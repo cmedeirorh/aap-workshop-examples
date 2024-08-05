@@ -43,4 +43,4 @@
     
   - name: Set Change Request Number as Fact
     ansible.builtin.set_fact:
-      latest_change_request: "{{ new_ticket.record.number }}"
+      latest_change_request: "{{ new_ticket }}"
