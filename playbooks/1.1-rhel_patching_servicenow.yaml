@@ -42,6 +42,6 @@
         "{{ dnf_update_status }}"
     register: new_ticket
     
-  - name: Print details from previous task
-    ansible.builtin.debug:
-      var: new_ticket
+  - name: Set Change Request Number as Fact
+    ansible.builtin.set_fact:
+      latest_change_request: new_ticket.record.number
