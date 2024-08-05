@@ -27,7 +27,7 @@
       risk: low
       impact: medium
       short_description: 'System/node "{{ inventory_hostname }}" requires patching.'
-      description: "The following packages require update: \n {{ dnf_update_status }}"
+      description: "The following packages require update: \n {{ dnf_update_status.results }}"
     register: new_ticket
     when: dnf_update_status is changed
 
