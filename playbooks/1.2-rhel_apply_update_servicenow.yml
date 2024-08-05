@@ -24,7 +24,7 @@
           username: "{{ sn_username }}"
           password: "{{ sn_password }}"
       query:
-        - short_description: "LIKE {{ ansible_host }}"
+        - short_description: "LIKE {{ inventory_hostname }}"
           state: = new
           sys_created_by: = ansible      
     register: changerequest_info
@@ -52,7 +52,7 @@
           password: "{{ sn_password }}"
       state: closed
       close_code: "successful"
-      close_notes: 'Packages Updated on system/node "{{ ansible_host }}":  {{ dnf_update_status }}'
+      close_notes: 'Packages Updated on system/node "{{ inventory_hostname }}":  {{ dnf_update_status }}'
       assignment_group: "Software"
       number: "{{ changerequest_info.records[0].number }}"
     register: updated_ticket
