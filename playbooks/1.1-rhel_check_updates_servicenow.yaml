@@ -8,7 +8,6 @@
     ansible.builtin.dnf:
       name: '*'
       state: latest
-      # exclude: '{{ excluded_pks }}'
       update_cache: true
       update_only: true
       download_only: true
@@ -24,7 +23,7 @@
       category: system_software
       type: standard
       requested_by: "ansible"
-      priority: high
+      priority: critical
       risk: low
       impact: medium
       short_description: 'System/node "{{ ansible_host }}" requires patching.'
