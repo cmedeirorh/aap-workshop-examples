@@ -1,5 +1,5 @@
 ---
-- name: Update all packages on RHEL
+- name: Check for updates on RHEL and create ServiceNow
   hosts: all
   become: true
    
@@ -11,7 +11,7 @@
       # exclude: '{{ excluded_pks }}'
       update_cache: true
       update_only: true
-      download_only: "{{ dnf_download }}"
+      download_only: true
     register: dnf_update_status
   
   - name: Create a ServiceNow change request
