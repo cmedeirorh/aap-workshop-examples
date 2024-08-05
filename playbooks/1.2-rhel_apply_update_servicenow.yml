@@ -1,0 +1,52 @@
+---
+- name: Update all packages on RHEL and Update ServiceNow
+  hosts: all
+  become: true
+   
+  tasks:
+  - name: Update all installed packages using DNF module
+    ansible.builtin.dnf:
+      name: '*'
+      state: latest
+      update_cache: true
+      update_only: true
+    register: dnf_update_status
+  
+  - name: Check to see if we need a reboot
+    ansible.builtin.command: needs-restarting -r
+    register: result
+    ignore_errors: true
+
+  - name: Move ServiceNow change request status
+    servicenow.itsm.change_request:
+      instance:
+          host: "{{ sn_instance }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
+      state: "{{ item }}"
+      assignment_group: "Software"
+      number: "{{ sn_number }}"
+    loop:
+      - scheduled
+      - implement
+      - review
+    when: dnf_update_status is changed
+      
+  - name: Close a ServiceNow change request
+    servicenow.itsm.change_request:
+      instance:
+          host: "{{ sn_instance }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
+      state: closed
+      close_code: "successful"
+      close_notes: 'Packages Updated on system/node "{{ ansible_host }}":  {{ dnf_update_status }}'
+      assignment_group: "Software"
+      number: "{{ sn_number }}"
+    register: updated_ticket
+    when: dnf_update_status is changed
+
+  - name: Reboot when required
+    ansible.builtin.reboot:
+      msg: "Reboot initiated by Ansible"
+    when: result.rc == 1    
