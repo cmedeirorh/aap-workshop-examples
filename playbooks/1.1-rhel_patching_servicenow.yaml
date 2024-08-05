@@ -41,8 +41,18 @@
       short_description: "System {{ inventory_hostname }} needs to be patched."
       description: "The following updated. \n {{ dnf_update_status }}"
     register: new_ticket
-    when: dnf_update_status is changed and download_only is true
+    when: dnf_update_status is changed and download_only == true
     
-  - name: Get Change Request Number
-    ansible.builtin.debug:
-      var: " {{ new_ticket.record.number }}"
+  - name: Close a ServiceNow change request
+    servicenow.itsm.change_request:
+      instance:
+          host: "{{ sn_instance }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
+      state: closed
+      close_code: "successful"
+      close_notes: "Packages Updates:  {{ dnf_update_status }}"
+      assignment_group: Software
+      number: "{{ sn_number }}"
+    register: updated_ticket
+    when: dnf_update_status is changed and download_only == false
