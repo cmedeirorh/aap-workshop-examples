@@ -26,11 +26,8 @@
       query:
         - short_description: "LIKE {{ ansible_host }}"
           state: = new
+          sys_created_by: = ansible      
     register: changerequest_info
-
-  - name: Reboot when required
-    ansible.builtin.debug:
-      var: changerequest_info.records[0].number
 
   - name: Move ServiceNow change request status
     servicenow.itsm.change_request:
