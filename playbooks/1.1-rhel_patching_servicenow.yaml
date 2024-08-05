@@ -38,9 +38,10 @@
       priority: high
       risk: low
       impact: medium
-      short_description: "System Patched: {{ inventory_hostname }}"
-      description: "This system has been fully updated. \n {{ dnf_update_status }}"
+      short_description: "System {{ inventory_hostname }} needs to be patched."
+      description: "The following updated. \n {{ dnf_update_status }}"
     register: new_ticket
+    when: dnf_update_status is changed and download_only is true
     
   - name: Get Change Request Number
     ansible.builtin.debug:
