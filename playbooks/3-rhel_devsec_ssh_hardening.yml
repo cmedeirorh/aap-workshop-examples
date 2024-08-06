@@ -2,6 +2,8 @@
 - name: Perform Linux Hardening using DevSec roles (https://galaxy.ansible.com/ui/repo/published/devsec/hardening)
   hosts: all
   become: true
+  vars:
+    ssh_max_auth_retries: 5
 
   roles:
     - devsec.hardening.ssh_hardening
