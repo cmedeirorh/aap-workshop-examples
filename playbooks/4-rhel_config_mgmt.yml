@@ -15,7 +15,7 @@
   - name: Download Dynatrace Agent
     ansible.builtin.get_url:
       url: '{{ oneagent_installer_url }}'
-      dest: ' {{ oneagent_path }}'
+      dest: '{{ oneagent_path }}'
       mode: '0600'
       headers: 
         Authorization: Api-Token {{ oneagent_paas_token }}
