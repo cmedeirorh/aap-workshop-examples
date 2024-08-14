@@ -7,10 +7,15 @@
     zabbix_server: zabbix.int.cmedeiros.net
      
   tasks: 
-  - name: Install required packages
+  - name: Install required repository
     ansible.builtin.dnf:
       name: 
         - '{{ zabbix_repo }}'
+      state: present
+      
+  - name: Install required packages
+    ansible.builtin.dnf:
+      name: 
         - zabbix-agent2
         - firewalld
       state: present
