@@ -34,3 +34,4 @@
         - --set-app-log-content-access=true
         - --set-host-group=cmedeiro
         - --set-host-tag=workshop
+        - --set-host-name="{{ inventory_hostname }}"
