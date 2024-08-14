@@ -4,8 +4,7 @@
   become: yes
   vars:
     oneagent_path: '/tmp/Dynatrace-OneAgent.sh'
-    oneagent_paas_token: ''
-     
+ 
   tasks: 
   - name: Install required packages
     ansible.builtin.dnf:
@@ -28,7 +27,10 @@
       
   - name: Install agent
     ansible.builtin.command:
-      cmd: /bin/sh '{{ oneagent_path }}' --set-monitoring-mode=fullstack --set-app-log-content-access=true --set-host-group=cmedeiro --set-host-tag=workshop
-      permanent: true
-      state: enabled
-      immediate: true
+      argv:
+        - /bin/sh
+        - "{{ oneagent_path }}"
+        - --set-monitoring-mode=fullstack
+        - --set-app-log-content-access=true
+        - --set-host-group=cmedeiro
+        - --set-host-tag=workshop
