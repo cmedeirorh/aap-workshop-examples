@@ -58,4 +58,4 @@
   - name: ServiceNow Change Request Number
     ansible.builtin.debug:
       var: changerequest_info.records[0].number
-    when: changerequest_exist == "false"
+    when: changerequest_exist == "true"
