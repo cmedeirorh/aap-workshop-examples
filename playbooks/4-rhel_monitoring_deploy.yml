@@ -1,5 +1,5 @@
 ---
-- name: RHEL misc config management
+- name: RHEL deploy Dynatrace OneAgent
   hosts: all
   become: yes
   vars:
