@@ -2,7 +2,9 @@
 - name: Check for updates on RHEL and create ServiceNow
   hosts: all
   become: true
-   
+  vars:
+    changerequest_exist: "false"
+
   tasks:
   - name: Update all installed packages using DNF module
     ansible.builtin.dnf:
@@ -12,7 +14,24 @@
       update_only: true
       download_only: true
     register: dnf_update_status
-  
+
+  - name: Check if an active change request exists
+    servicenow.itsm.change_request_info:
+      instance:
+          host: "{{ sn_instance }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
+      query:
+        - short_description: "LIKE {{ inventory_hostname }}"
+          state: = new
+          sys_created_by: = ansible
+    register: changerequest_info
+
+  - name: Set facts
+    when: changerequest_info.records[0].state is defined
+    ansible.builtin.set_fact:
+      changerequest_exist: "true"
+
   - name: Create a ServiceNow change request
     servicenow.itsm.change_request:
       instance:
@@ -29,9 +48,13 @@
       short_description: 'System/node "{{ inventory_hostname }}" requires patching.'
       description: "The following packages need to be update: \n {{ dnf_update_status.results }}"
     register: new_ticket
-    when: dnf_update_status is changed
+    when: ((dnf_update_status is changed) and (changerequest_exist == "false"))
 
   - name: ServiceNow Change Request Number
     ansible.builtin.debug:
       var: new_ticket.record.number
     when: new_ticket is defined
+
+  - name: ServiceNow Change Request Number
+    ansible.builtin.debug:
+      var: changerequest_info.records[0].number
