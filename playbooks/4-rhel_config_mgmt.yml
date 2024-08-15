@@ -28,11 +28,4 @@
       
   - name: Install agent
     ansible.builtin.command:
-      argv:
-        - /bin/sh
-        - "{{ oneagent_path }}"
-        - --set-monitoring-mode=fullstack
-        - --set-app-log-content-access=true
-        - --set-host-group=cmedeiro
-        - --set-host-tag=workshop
-        - --set-host-name="{{ inventory_hostname }}"
+      cmd: "/bin/sh {{ oneagent_path }} --set-monitoring-mode=fullstack --set-app-log-content-access=true --set-host-group=cmedeiro --set-host-tag=workshop --set-host-name={{ inventory_hostname }}"
