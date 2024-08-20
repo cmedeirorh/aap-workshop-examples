@@ -30,7 +30,7 @@
     
   - name: Create firewall rule for application
     ansible.posix.firewalld:
-      port: "{{ app_port }}"/tcp
+      port: "{{ app_port }}/tcp"
       permanent: true
       state: enabled
       immediate: true
