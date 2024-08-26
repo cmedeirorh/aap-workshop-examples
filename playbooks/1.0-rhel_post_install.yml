@@ -1,5 +1,5 @@
 ---
-- name: Sync SSH Keys
+- name: Misc Post Install Tasks for RHEL
   hosts: all
   become: true
   gather_facts: false
