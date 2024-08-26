@@ -6,7 +6,6 @@
 
   tasks:      
   - name: Record the post_install_time
-    ansible.posix.authorized_key:
     delegate_to: localhost
     register: post_install_time_raw
     changed_when: false
