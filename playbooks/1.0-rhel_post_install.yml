@@ -34,19 +34,6 @@
           - cockpit
         state: installed
     
-    - name: Patching my_packages
-      register: dnf_patch
-      ansible.builtin.dnf:
-        name: '*'
-        security: true
-        skip_broken: true
-        update_only: true
-        state: latest
-    
-    - name: Set fact for report
-      ansible.builtin.set_fact:
-        pkg_mgr_output: "{{ dnf_patch }}"
-    
     - name: Register the insights client
       redhat.insights.insights_register:
         state: present
@@ -59,18 +46,9 @@
       ansible.builtin.debug:
         var: my_public_ip
     
-    - name: Update the /etc/hosts file
-      ansible.builtin.template:
-        src: templates/hosts.j2
-        dest: /etc/hosts
-        owner: root
-        group: root
-        mode: "0644"
-        backup: true
-    
     - name: Copy the sshd-banner file into place
       ansible.builtin.copy:
-        src: files/sshd-banner
+        src: ../files/sshd-banner
         dest: /etc/ssh/sshd-banner
         owner: root
         group: root
@@ -91,7 +69,7 @@
     
     - name: Copy the new /etc/motd into place
       ansible.builtin.copy:
-        src: files/motd
+        src: ../files/motd
         dest: /etc/motd
         owner: root
         group: root
@@ -99,7 +77,7 @@
     
     - name: Copy the new /etc/issue into place
       ansible.builtin.copy:
-        src: files/issue
+        src: ../files/motd
         dest: /etc/issue
         owner: root
         group: root
@@ -110,30 +88,6 @@
         path: /etc/motd.d
         state: directory
         mode: "0755"
-    
-    - name: Make sure the /etc/cockpit directory exists
-      ansible.builtin.file:
-        path: /etc/cockpit
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
-    
-    - name: Copy the /etc/issue.cockpit into place
-      ansible.builtin.copy:
-        src: files/issue.cockpit
-        dest: /etc/issue.cockpit
-        owner: root
-        group: root
-        mode: u+rw,g-wx,o-wx
-    
-    - name: Copy the /etc/cockpit/cockpit.conf into place
-      ansible.builtin.copy:
-        src: files/cockpit.conf
-        dest: /etc/cockpit/cockpit.conf
-        owner: root
-        group: root
-        mode: u+rw,g-wx,o-wx
     
     - name: Enable the cockpit socket
       ansible.builtin.systemd_service:
@@ -149,18 +103,3 @@
     - name: Reboot the machine if it is required
       when: reboot_required.stat.exists
       ansible.builtin.reboot:
-    
-    - name: Get services
-      check_mode: false
-      ansible.builtin.service_facts:
-    
-    - name: Save patch reporting facts
-      loop:
-        - key: "{{ inventory_hostname }}"
-          value:
-            pre_check_services: "{{ pre_check_services }}"
-            services: "{{ services }}"
-            pkg_mgr_output: "{{ pkg_mgr_output }}"
-      ansible.builtin.set_stats:
-        data:
-          patch_reports: "{{ patch_reports | default({}) | combine({item.key: item.value}) }}"
