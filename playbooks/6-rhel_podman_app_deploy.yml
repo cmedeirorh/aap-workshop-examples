@@ -37,4 +37,4 @@
       
   - name: Print the gateway for each host when defined
     ansible.builtin.debug:
-      msg: "The application can be accessed on this url http://{{ public_dns_name }}{{ app_port }}"
+      msg: "The application can be accessed on this url http://{{ public_dns_name }}:{{ app_port }}"
