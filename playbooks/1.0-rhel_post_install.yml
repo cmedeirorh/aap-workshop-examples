@@ -37,14 +37,6 @@
     redhat.insights.insights_register:
       state: present
   
-  - name: Get the ansible fact from the first play
-    ansible.builtin.set_fact:
-      my_public_ip: "{{ hostvars['localhost']['my_public_ip'] }}"
-  
-  - name: Print my_public_ip
-    ansible.builtin.debug:
-      var: my_public_ip
-  
   - name: Copy the sshd-banner file into place
     ansible.builtin.copy:
       src: ../files/sshd-banner
