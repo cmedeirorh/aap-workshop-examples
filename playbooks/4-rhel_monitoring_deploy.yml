@@ -5,6 +5,7 @@
   vars:
     oneagent_path: '/tmp/Dynatrace-OneAgent.sh'
     oneagent_installer_url: 'https://{{ oneagent_instance }}/api/v1/deployment/installer/agent/unix/default/latest?arch=x86'
+    workshop_owner: cmedeiro
  
   tasks: 
   - name: Install required packages
@@ -28,4 +29,4 @@
       
   - name: Install agent
     ansible.builtin.command:
-      cmd: "/bin/sh {{ oneagent_path }} --set-monitoring-mode=fullstack --set-app-log-content-access=true --set-host-group=cmedeiro --set-host-tag=workshop --set-host-name={{ inventory_hostname }}"
+      cmd: "/bin/sh {{ oneagent_path }} --set-monitoring-mode=fullstack --set-app-log-content-access=true --set-host-group=cmedeiro --set-host-tag=workshop --set-host-tag={{ workshop_owner }} --set-host-name={{ inventory_hostname }}"
