@@ -41,7 +41,7 @@
       state: new
       category: system_software
       type: standard
-      requested_by: "ansible"
+      requested_by: "admin"
       priority: critical
       risk: low
       impact: medium
