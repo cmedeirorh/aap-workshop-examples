@@ -52,7 +52,7 @@
           password: "{{ sn_password }}"
       state: closed
       close_code: "successful"
-      close_notes: 'Packages Updated on system/node "{{ inventory_hostname }}":  {{ dnf_update_status }}'
+      close_notes: 'COMPLETED: Packages Updated on system/node "{{ inventory_hostname }}":  {{ dnf_update_status }}'
       assignment_group: "Software"
       number: "{{ changerequest_info.records[0].number }}"
     register: updated_ticket
