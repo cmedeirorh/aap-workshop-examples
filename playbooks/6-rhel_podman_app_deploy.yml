@@ -4,7 +4,7 @@
   become: true
   vars:
   - app_port: "8080"
-  - app_name: "tasks-app"
+  #- app_name: "tasks-app"
   - app_image: "quay.io/cmedeiro/tasks-app:latest"
  
   tasks:
