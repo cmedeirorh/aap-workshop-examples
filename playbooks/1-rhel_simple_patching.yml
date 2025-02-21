@@ -15,7 +15,7 @@
     
   - name: Update kernel packages using DNF module
     ansible.builtin.dnf:
-      name: 'kernel*'
+      name: 'kernel'
       state: latest
     register: dnf_update_status_kernel
     notify: Reboot when required
