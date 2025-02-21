@@ -8,7 +8,7 @@
     ansible.builtin.dnf:
       name: '*'
       state: latest
-      exclude: "kernel*"
+      exclude: "kernel"
       update_cache: true
       update_only: true
     register: dnf_update_status
