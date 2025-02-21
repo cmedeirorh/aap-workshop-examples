@@ -2,25 +2,22 @@
 - name: Update all packages on RHEL
   hosts: all
   become: true
-  vars:
-    excluded_pks: "kernel*"
   
   tasks:
-  - name: Update all installed packages using DNF module
+  - name: Update all installed packages using DNF module (exclude kernel)
     ansible.builtin.dnf:
       name: '*'
       state: latest
-      exclude: '{{ excluded_pks }}'
+      exclude: "kernel*"
       update_cache: true
       update_only: true
     register: dnf_update_status
-  
-  - name: Check to see if we need a reboot
-    ansible.builtin.shell: 
-      cmd: needs-restarting -r -s
-    register: needs_restarting
-    changed_when: needs_restarting.rc == 1
-    failed_when: false
+    
+  - name: Update kernel packages using DNF module
+    ansible.builtin.dnf:
+      name: 'kernel*'
+      state: latest
+    register: dnf_update_status_kernel
     notify: Reboot when required
 
 handlers:  
