@@ -19,9 +19,11 @@
     ansible.builtin.shell: 
       cmd: needs-restarting -r -s
     register: needs_restarting
-    ignore_errors: true
-  
+    changed_when: needs_restarting.rc == 1
+    failed_when: false
+    notify: Reboot when required
+
+handlers:  
   - name: Reboot when required
     ansible.builtin.reboot:
       msg: "Reboot initiated by Ansible"
-    when: needs_restarting.rc == 1
