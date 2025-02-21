@@ -20,7 +20,7 @@
     register: dnf_update_status_kernel
     notify: Reboot when required
 
-handlers:  
+  handlers:  
   - name: Reboot when required
     ansible.builtin.reboot:
       msg: "Reboot initiated by Ansible"
