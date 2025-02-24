@@ -4,7 +4,7 @@
   become: yes
   vars:
     oneagent_path: '/tmp/Dynatrace-OneAgent.sh'
-    oneagent_installer_url: 'https://{{ oneagent_instance }}/api/v1/deployment/installer/agent/unix/default/latest?arch=x86'
+    oneagent_installer_url: '{{ oneagent_instance }}/api/v1/deployment/installer/agent/unix/default/latest?arch=x86'
     workshop_owner: cmedeiro
  
   tasks: 
