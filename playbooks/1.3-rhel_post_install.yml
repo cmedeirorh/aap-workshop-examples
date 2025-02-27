@@ -31,6 +31,7 @@
         - insights-client
         - cockpit
       state: installed
+    retries: 5
   
   - name: Register the insights client
     redhat.insights.insights_register:
