@@ -20,7 +20,7 @@
       query:
         - short_description: "LIKE {{ inventory_hostname }}"
           state: = new
-          sys_created_by: = ansible
+          # sys_created_by: = ansible
     register: changerequest_info
     
   - name: Print
