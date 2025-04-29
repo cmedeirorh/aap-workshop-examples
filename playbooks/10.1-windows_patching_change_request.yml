@@ -22,7 +22,11 @@
           state: = new
           sys_created_by: = ansible
     register: changerequest_info
-
+    
+  - name: Print
+    ansible.builtin.debug:
+      msg: changerequest_info
+      
   - name: Set facts
     delegate_to: localhost
     when: changerequest_info.records[0].state is defined
