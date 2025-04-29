@@ -25,7 +25,7 @@
     
   - name: Print
     ansible.builtin.debug:
-      msg: changerequest_info
+      var: changerequest_info
       
   - name: Set facts
     delegate_to: localhost
