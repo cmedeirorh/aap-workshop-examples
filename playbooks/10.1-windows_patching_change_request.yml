@@ -1,8 +1,6 @@
 ---
 - name: Check Updates for Windows Servers and create ServiceNow
   hosts: windows
-  vars:
-    changerequest_exist: "false"
 
   tasks:
   - name: Windows Update List
@@ -25,13 +23,8 @@
     
   - name: Print
     ansible.builtin.debug:
-      var: changerequest_info.records
-      
-  - name: Set facts
-    delegate_to: localhost
-    when: changerequest_info.records is defined
-    ansible.builtin.set_fact:
-      changerequest_exist: "true"
+      var: changerequest_info.records.number
+    when: changerequest_info.records.number is defined
 
   - name: Create a ServiceNow change request
     delegate_to: localhost
@@ -51,7 +44,7 @@
       description: "The following packages need to be update: \n {{ package_list }}"
     register: new_ticket
     # when: ((package_list is changed) and (changerequest_exist == "false"))
-    # when: ((package_list is changed) and (changerequest_info.records[0] is defined))
+    when: ((package_list is changed) and (changerequest_info.records.number not defined))
 
   - name: ServiceNow Change Request Number
     delegate_to: localhost
