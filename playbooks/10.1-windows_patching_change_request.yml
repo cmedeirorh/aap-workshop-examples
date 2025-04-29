@@ -25,11 +25,11 @@
     
   - name: Print
     ansible.builtin.debug:
-      var: changerequest_info.records[0]
+      var: changerequest_info.records
       
   - name: Set facts
     delegate_to: localhost
-    when: changerequest_info.records[0].state is defined
+    when: changerequest_info.records is defined
     ansible.builtin.set_fact:
       changerequest_exist: "true"
 
@@ -51,7 +51,7 @@
       description: "The following packages need to be update: \n {{ package_list.results }}"
     register: new_ticket
     # when: ((package_list is changed) and (changerequest_exist == "false"))
-    when: ((package_list is changed) and (changerequest_info[0] | length > 0))
+    when: ((package_list is changed) and (changerequest_info.records is defined))
 
   - name: ServiceNow Change Request Number
     delegate_to: localhost
