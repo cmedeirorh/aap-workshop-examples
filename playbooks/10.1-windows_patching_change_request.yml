@@ -48,7 +48,7 @@
       risk: low
       impact: medium
       short_description: 'System/node "{{ inventory_hostname }}" requires patching.'
-      description: "The following packages need to be update: \n {{ package_list.results }}"
+      description: "The following packages need to be update: \n {{ package_list }}"
     register: new_ticket
     # when: ((package_list is changed) and (changerequest_exist == "false"))
     # when: ((package_list is changed) and (changerequest_info.records[0] is defined))
