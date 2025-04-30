@@ -17,7 +17,7 @@
           username: "{{ sn_username }}"
           password: "{{ sn_password }}"
       query:
-        - short_description: "LIKE System {{ inventory_hostname }}"
+        - short_description: "LIKE {{ inventory_hostname }}"
           state: = new
           # sys_created_by: = ansible
     register: changerequest_info
