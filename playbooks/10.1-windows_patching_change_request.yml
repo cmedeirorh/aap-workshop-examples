@@ -6,6 +6,7 @@
   - name: Windows Update List
     ansible.windows.win_updates:
       state: searched
+      category_names: '*'
     register: package_list
     
   - name: Check if an active change request exists
