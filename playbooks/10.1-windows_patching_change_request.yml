@@ -45,7 +45,7 @@
       description: "The following packages need to be update: \n {{ package_list }}"
     register: new_ticket
     # when: ((package_list is changed) and (changerequest_exist == "false"))
-    when: package_list.found_update_count > 0
+    when: ((package_list.found_update_count > 0) and (changerequest_info.records.number is defined))
 
   - name: ServiceNow Change Request Number
     delegate_to: localhost
