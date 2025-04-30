@@ -46,7 +46,7 @@
     register: new_ticket
     # when: ((package_list is changed) and (changerequest_exist == "false"))
     # when: ((package_list.found_update_count > 0) and (changerequest_info.records.number is defined))
-    when: changerequest_info.record.number is not defined
+    when: changerequest_info.records[0].state is not defined
 
   - name: ServiceNow Change Request Number
     delegate_to: localhost
