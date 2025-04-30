@@ -51,8 +51,3 @@
     ansible.builtin.debug:
       var: new_ticket.record.number
     when: new_ticket is defined
-
-  - name: ServiceNow Change Request Number
-    ansible.builtin.debug:
-      var: changerequest_info.records[0].number
-    when: changerequest_exist == "true"
