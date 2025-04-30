@@ -23,8 +23,8 @@
     
   - name: Print
     ansible.builtin.debug:
-      var: changerequest_info.records.number
-    when: changerequest_info.records.number is defined
+      var: package_list.changed
+    when: package_list is defined
 
   - name: Create a ServiceNow change request
     delegate_to: localhost
