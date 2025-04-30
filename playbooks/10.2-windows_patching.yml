@@ -1,0 +1,71 @@
+---
+- name: Run Updates on Windows
+  hosts: windows
+  gather_facts: no
+  
+  tasks:
+  - name: Windows update
+    ansible.windows.win_updates:
+      category_names:
+        - SecurityUpdates
+        - CriticalUpdates
+        - ServicePacks
+        - UpdateRollups
+        - Application
+        - Connectors
+        - DefinitionUpdates
+        - DeveloperKits
+        - FeaturePacks
+        - Guidance
+        - Tools
+        - Updates
+      reboot: yes
+      reboot_timeout: 800
+    register: update_results
+    retries: 3
+    until: update_results is succeeded
+    
+  - name: Retrieve change request Number
+    servicenow.itsm.change_request_info:
+      instance:
+          host: "{{ sn_instance }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
+      query:
+        - short_description: "LIKE {{ inventory_hostname }}"
+          state: = new
+          sys_created_by: = admin      
+    register: changerequest_info
+
+  - name: Move ServiceNow change request status
+    servicenow.itsm.change_request:
+      instance:
+          host: "{{ sn_instance }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
+      state: "{{ item }}"
+      assignment_group: "Software"
+      number: "{{ changerequest_info.records[0].number }}"
+    loop:
+      - scheduled
+      - implement
+      - review
+    when: update_results is changed
+
+  - name: Close a ServiceNow change request
+    servicenow.itsm.change_request:
+      instance:
+          host: "{{ sn_instance }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
+      state: closed
+      close_code: "successful"
+      close_notes: 'COMPLETED: Packages Updated on system/node "{{ inventory_hostname }}":  {{ update_results }}'
+      assignment_group: "Software"
+      number: "{{ changerequest_info.records[0].number }}"
+    register: updated_ticket
+    when: update_results is changed
+    
+  - name: Report update results
+    ansible.builtin.debug:
+      msg: "{{ update_results.updates }}"
