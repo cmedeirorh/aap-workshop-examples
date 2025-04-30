@@ -17,7 +17,7 @@
           username: "{{ sn_username }}"
           password: "{{ sn_password }}"
       query:
-        - short_description: "LIKE {{ inventory_hostname }}"
+        - short_description: "LIKE System {{ inventory_hostname }}"
           state: = new
           # sys_created_by: = ansible
     register: changerequest_info
@@ -41,13 +41,11 @@
       priority: critical
       risk: low
       impact: medium
-      short_description: 'System/node "{{ inventory_hostname }}" requires patching.'
+      short_description: 'System "{{ inventory_hostname }}" requires patching.'
       description: "The following packages need to be update: \n {{ package_list }}"
     register: new_ticket
-    # when: ((package_list is changed) and (changerequest_exist == "false"))
     when: ((package_list.found_update_count > 0) and (changerequest_info.records[0].state is not defined))
-    # when: changerequest_info.records[0].state is not defined
-
+  
   - name: ServiceNow Change Request Number
     delegate_to: localhost
     ansible.builtin.debug:
