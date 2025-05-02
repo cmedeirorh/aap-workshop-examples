@@ -26,6 +26,7 @@
     until: update_results is succeeded
     
   - name: Retrieve change request Number
+    delegate_to: localhost
     servicenow.itsm.change_request_info:
       instance:
           host: "{{ sn_instance }}"
@@ -38,6 +39,7 @@
     register: changerequest_info
 
   - name: Move ServiceNow change request status
+    delegate_to: localhost
     servicenow.itsm.change_request:
       instance:
           host: "{{ sn_instance }}"
@@ -53,6 +55,7 @@
     when: update_results is changed
 
   - name: Close a ServiceNow change request
+    delegate_to: localhost
     servicenow.itsm.change_request:
       instance:
           host: "{{ sn_instance }}"
