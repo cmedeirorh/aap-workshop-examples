@@ -6,7 +6,7 @@
     changerequest_exist: "false"
 
   tasks:
-  - name: Update all installed packages using DNF module
+  - name: Check all installed packages available using DNF module
     ansible.builtin.dnf:
       name: '*'
       state: latest
