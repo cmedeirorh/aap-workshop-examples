@@ -16,6 +16,10 @@
           sys_created_by: = ansible      
     register: changerequest_info 
 
+  - name: End play if no ticket
+    meta: end_play
+    when: changerequest_info.records[0].number == ""
+    
   - name: Update all installed packages using DNF module
     ansible.builtin.dnf:
       name: '*'
@@ -23,13 +27,11 @@
       update_cache: true
       update_only: true
     register: dnf_update_status
-    when: changerequest_info.records[0].number | length > 0
-
+   
   - name: Check to see if we need a reboot
     ansible.builtin.command: needs-restarting -r
     register: result
     ignore_errors: true
-    when: changerequest_info.records[0].number | length > 0
 
   - name: Move ServiceNow change request status
     servicenow.itsm.change_request:
@@ -44,8 +46,8 @@
       - scheduled
       - implement
       - review
-    when: ((dnf_update_status is changed) and (changerequest_info.records[0].number | length > 0))
-
+    when: dnf_update_status is changed
+    
   - name: Close a ServiceNow change request
     servicenow.itsm.change_request:
       instance:
@@ -58,9 +60,9 @@
       assignment_group: "Software"
       number: "{{ changerequest_info.records[0].number }}"
     register: updated_ticket
-    when: ((dnf_update_status is changed) and (changerequest_info.records[0].number | length > 0))
+    when: dnf_update_status is changed
 
   - name: Reboot when required
     ansible.builtin.reboot:
       msg: "Reboot initiated by Ansible"
-    when: (result.rc == 1) and (changerequest_info.records[0].number | length > 0))
+    when: result.rc == 1
