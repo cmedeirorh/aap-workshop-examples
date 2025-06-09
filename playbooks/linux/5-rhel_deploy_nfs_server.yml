@@ -25,7 +25,7 @@
         
     - name: Update Exports configuration file
       ansible.builtin.template:
-        src: ../files/exports.j2
+        src: ../../files/exports.j2
         dest: /etc/exports.d/ansible_managed.exports
         owner: root
         group: root
