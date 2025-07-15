@@ -4,7 +4,7 @@
   become: true
   gather_facts: false
 
-  tasks:      
+  tasks:
     - name: Set authorized key without validating the TLS/SSL certificates
       ansible.posix.authorized_key:
         user: ec2-user
