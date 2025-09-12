@@ -3,4 +3,3 @@ collections:
   - community.vmware
   - containers.podman
   - devsec.hardening
-  - fedora.linux_system_roles
