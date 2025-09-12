@@ -1,3 +1,9 @@
 ---
 collections:
-  - community.general
+  - community.vmware
+  - vmware.vmware_rest
+  - awx.awx
+  - containers.podman
+  - devsec.hardening
+  - ansible.posix
+  - fedora.linux_system_roles
