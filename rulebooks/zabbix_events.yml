@@ -8,10 +8,10 @@
 
   rules:
     - name: Zabbix Alert - SELinux Change
-      condition: event.payload.trigger_name is match('Security Alert DevSec',ignorecase=true)
+      condition: event.payload.trigger_name is match('Linux: /etc/ssh/ssh_config has changed',ignorecase=true)
       action:
         run_job_template:
-          name: "LINUX Workshop - OS Hardening"
+          name: "Linux SSH Hardening"
           organization: Default
           job_args:
             extra_vars:
@@ -21,7 +21,7 @@
       condition: event.payload.trigger_name is match('URL Checker')
       action:
         run_job_template:
-          name: "Deploy APP With Podman"
+          name: "Linux Deploy APP With Podman"
           organization: Default
           job_args:
             limit: "{{ event.payload.host_host }}"
