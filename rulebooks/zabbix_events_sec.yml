@@ -16,3 +16,30 @@
           job_args:
             extra_vars:
               _hosts: "{{ event.payload.host_host }}"
+
+    - name: Zabbix Alert - Web Monitoring
+      condition: event.payload.trigger_name is match('URL Checker')
+      action:
+        run_job_template:
+          name: "Deploy APP With Podman"
+          organization: Default
+          job_args:
+            limit: "{{ event.payload.host_host }}"
+
+    - name: Zabbix Alert - Others
+      condition: event.payload.trigger_name is defined
+      action:
+        run_job_template:
+          name: "Report Incident to ServiceNow"
+          organization: Default
+          job_args:
+            limit: "{{ event.payload.host_host }}"
+            extra_vars:
+              _hosts: "{{ event.payload.host_host }}"
+              _payload: "{{ event.payload }}"
+            
+    - name: Debug
+      condition: event.payload is defined       
+      action:
+        debug:
+          var: event.payload
