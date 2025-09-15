@@ -8,7 +8,7 @@
 
   rules:
     - name: Zabbix Alert - SELinux Change
-      condition: event.payload.trigger_name is match('Linux: /etc/ssh/ssh_config has changed',ignorecase=true)
+      condition: event.payload.trigger_name is match('Linux Security - /etc/ssh/ssh_config has changed',ignorecase=true)
       action:
         run_job_template:
           name: "Linux SSH Hardening"
