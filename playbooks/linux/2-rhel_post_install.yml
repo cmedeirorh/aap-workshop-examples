@@ -67,8 +67,8 @@
       mode: u+rw,g-wx,o-wx
   
   - name: Copy the new /etc/issue into place
-    ansible.builtin.copy:
-      src: ../../files/motd
+    ansible.builtin.template:
+      src: ../../files/issue.j2
       dest: /etc/issue
       owner: root
       group: root
