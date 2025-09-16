@@ -38,8 +38,8 @@
       state: present
   
   - name: Copy the sshd-banner file into place
-    ansible.builtin.copy:
-      src: ../../files/sshd-banner
+    ansible.builtin.template:
+      src: ../../files/sshd-banner.j2
       dest: /etc/ssh/sshd-banner
       owner: root
       group: root
