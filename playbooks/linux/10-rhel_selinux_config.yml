@@ -1,0 +1,42 @@
+---
+- name: Linux SELinux Config
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Ensure SELinux is enabled and enforcing
+      ansible.posix.selinux:
+        policy: targeted
+        state: enforcing
+      register: selinux_status
+
+    - name: Verify if reboot needed
+      ansible.builtin.debug:
+        msg: "Reboot needed: {{ selinux_status.reboot_required }}"
+      changed_when: "{{ selinux_status.reboot_required | bool }}"
+      notify: reboot_host
+
+    - name: Ensure audit package is installed
+      ansible.builtin.dnf:
+        name: audit
+        state: present
+
+    - name: Ensure auditd service is up and running
+      ansible.builtin.service:
+        name: auditd
+        state: started
+        enabled: true
+
+    - name: Add a basic audit config
+      ansible.builtin.copy:
+        src: ../../files/audit.rules
+        dest: /etc/audit/rules.d/audit.rules
+        owner: root
+        group: root
+        mode: 0600
+      notify: reboot_host
+
+  handlers:
+    - name: reboot_host
+      ansible.builtin.reboot:
+        reboot_timeout: 360
