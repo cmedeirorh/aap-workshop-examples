@@ -7,7 +7,7 @@
         port: 35001
 
   rules:
-    - name: Zabbix Alert - SSH Change
+    - name: Zabbix Alert - SELinux Change
       condition: event.payload.event_tags.service[0] is match ('selinux_security')
       action:
         run_job_template:
