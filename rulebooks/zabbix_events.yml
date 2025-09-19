@@ -11,7 +11,7 @@
       condition: event.payload.event_tags.service[0] is match ('selinux_security')
       action:
         run_job_template:
-          name: "Linux SELinux Config"
+          name: "EDA - Linux SELinux Config"
           organization: Default
           job_args:
             extra_vars:
@@ -21,7 +21,7 @@
       condition: event.payload.event_tags.service[0] is match ('ssh_security')
       action:
         run_job_template:
-          name: "Linux SSH Hardening"
+          name: "EDA - Linux SSH Hardening"
           organization: Default
           job_args:
             extra_vars:
@@ -31,7 +31,7 @@
       condition: event.payload.event_tags.service[0] is match ('url_checker')
       action:
         run_job_template:
-          name: "Linux Deploy APP With Podman"
+          name: "EDA - Linux Deploy APP With Podman"
           organization: Default
           job_args:
             limit: "{{ event.payload.host_host }}"
@@ -40,7 +40,7 @@
       condition: event.payload.trigger_name is defined
       action:
         run_job_template:
-          name: "Report Incident to ServiceNow"
+          name: "EDA - Report Incident to ServiceNow"
           organization: Default
           job_args:
             limit: "{{ event.payload.host_host }}"
