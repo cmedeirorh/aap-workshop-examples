@@ -1,10 +1,10 @@
 ---
-- name: Enable SELinux 
+- name: Append a new line to Config File
   hosts: all
   become: yes
  
   tasks:
-  - name: Enable SELinux config
-    ansible.posix.selinux:
-      policy: targeted
-      state: enforcing
+  - name: Append a new line to Config File
+    ansible.builtin.lineinfile:
+      path: '{{ file_path }}'
+      line: "# This file was changed outside config management"
