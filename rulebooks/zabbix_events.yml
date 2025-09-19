@@ -7,7 +7,17 @@
         port: 35001
 
   rules:
-    - name: Zabbix Alert - SELinux Change
+    - name: Zabbix Alert - SSH Change
+      condition: event.payload.event_tags.service[0] is match ('selinux_security')
+      action:
+        run_job_template:
+          name: "Linux SELinux Config"
+          organization: Default
+          job_args:
+            extra_vars:
+              _hosts: "{{ event.payload.host_host }}"
+
+    - name: Zabbix Alert - SSH Change
       condition: event.payload.event_tags.service[0] is match ('ssh_security')
       action:
         run_job_template:
@@ -16,9 +26,9 @@
           job_args:
             extra_vars:
               _hosts: "{{ event.payload.host_host }}"
-
+              
     - name: Zabbix Alert - Web Monitoring
-      condition: event.payload.trigger_name is match('URL Checker')
+      condition: event.payload.event_tags.service[0] is match ('url_checker')
       action:
         run_job_template:
           name: "Linux Deploy APP With Podman"
