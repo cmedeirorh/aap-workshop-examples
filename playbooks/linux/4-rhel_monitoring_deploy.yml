@@ -20,25 +20,10 @@
         - firewalld
       state: present
 
-  - name: Set Zabbix Server permission
-    ansible.builtin.lineinfile:
-      path: /etc/zabbix/zabbix_agent2.conf
-      search_string: 'Server=127.0.0.1'
-      line: 'Server={{ zabbix_server }}'
-      backup: true
-
-  - name: Set Active Agent
-    ansible.builtin.lineinfile:
-      path: /etc/zabbix/zabbix_agent2.conf
-      search_string: 'ServerActive=127.0.0.1'
-      line: 'ServerActive={{ zabbix_server }}'
-      backup: true
-      
-  - name: Set Agent Hostname
-    ansible.builtin.lineinfile:
-      path: /etc/zabbix/zabbix_agent2.conf
-      search_string: 'Hostname=Zabbix server'
-      line: 'Hostname={{ inventory_hostname }}'
+  - name: Zabbix Agent Config
+    ansible.builtin.template:
+      src: ../files/zabbix_agent2.j2
+      dest: /etc/zabbix/zabbix_agent2.conf
       backup: true
 
   - name: Config Zabbix Agent as root
