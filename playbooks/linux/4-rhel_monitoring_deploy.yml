@@ -22,7 +22,7 @@
 
   - name: Zabbix Agent Config
     ansible.builtin.template:
-      src: zabbix_agent2.j2
+      src: ../../files/zabbix_agent2.j2
       dest: /etc/zabbix/zabbix_agent2.conf
       backup: true
 
