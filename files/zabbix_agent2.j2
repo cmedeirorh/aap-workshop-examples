@@ -1,9 +1,9 @@
 PidFile=/run/zabbix/zabbix_agent2.pid
 LogFile=/var/log/zabbix/zabbix_agent2.log
 LogFileSize=0
-Server='{{ zabbix_server }}'
-ServerActive='{{ zabbix_server }}'
-Hostname='{{ inventory_hostname }}'
+Server={{ zabbix_server }}
+ServerActive={{ zabbix_server }}
+Hostname={{ inventory_hostname }}
 PluginSocket=/run/zabbix/agent.plugin.sock
 ControlSocket=/run/zabbix/agent.sock
 Include=/etc/zabbix/zabbix_agent2.d/plugins.d/*.conf
