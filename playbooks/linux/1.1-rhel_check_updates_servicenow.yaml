@@ -44,10 +44,10 @@
       impact: medium
       short_description: 'Pending OS Updates on "{{ inventory_hostname }}".'
       description: |
-        Server {{ inventory_hostname }} has {{ dnf_updates.packages | length }} pending package updates.
+        Server {{ inventory_hostname }} has {{ dnf_updates.results | length }} pending package updates.
         
         The following packages are ready for update:
-        {{ dnf_updates.packages | map(attribute='name') | join('\n') }}
+        {{ dnf_updates.results | map(attribute='name') | join('\n') }}
     register: new_ticket
     when: ((dnf_updates is defined) and (changerequest_exist == "false"))
 
