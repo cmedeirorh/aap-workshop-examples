@@ -27,7 +27,7 @@
       state: latest
       update_cache: true
       update_only: true
-    register: dnf_update_status
+    register: dnf_updates
    
   - name: Check to see if we need a reboot
     ansible.builtin.command: needs-restarting -r
@@ -47,7 +47,7 @@
       - scheduled
       - implement
       - review
-    when: dnf_update_status is changed
+    when: dnf_updates is changed
     
   - name: Close a ServiceNow change request
     servicenow.itsm.change_request:
@@ -57,11 +57,17 @@
           password: "{{ sn_password }}"
       state: closed
       close_code: "successful"
-      close_notes: 'COMPLETED: Packages Updated on system/node "{{ inventory_hostname }}":  {{ dnf_update_status }}'
+      close_notes: |
+        COMPLETED: Packages Updated on server {{ inventory_hostname }}
+        
+        The following packages have been updated:
+        {% for pkg in dnf_updates.results -%}
+        - {{ pkg.name }}-{{ pkg.version }}-{{ pkg.release }}-{{ pkg.arch }} from {{ pkg.repo }}
+        {% endfor %}
       assignment_group: "Software"
       number: "{{ changerequest_info.records[0].number }}"
     register: updated_ticket
-    when: dnf_update_status is changed
+    when: dnf_updates is changed
 
   - name: Reboot when required
     ansible.builtin.reboot:
