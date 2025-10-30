@@ -62,7 +62,7 @@
         
         The following packages have been updated:
         {% for pkg in dnf_updates.results -%}
-        - {{ pkg.name }}-{{ pkg.version }}-{{ pkg.release }}-{{ pkg.arch }} from {{ pkg.repo }}
+        - {{ pkg }}
         {% endfor %}
       assignment_group: "Software"
       number: "{{ changerequest_info.records[0].number }}"
