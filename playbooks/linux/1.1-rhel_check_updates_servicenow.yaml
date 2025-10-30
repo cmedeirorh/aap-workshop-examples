@@ -48,7 +48,7 @@
         
         The following packages are ready for update:
         {% for pkg in dnf_updates.results -%}
-        - {{ pkg.name }}: {{ pkg.version }}
+        - {{ pkg.name }}-{{ pkg.version }}-{{ pkg.release }}-{{ pkg.arch }} from {{ pkg.repo }}
         {% endfor %}
     register: new_ticket
     when: ((dnf_updates is defined) and (changerequest_exist == "false"))
