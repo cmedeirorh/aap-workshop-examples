@@ -45,7 +45,7 @@
       short_description: 'System/node "{{ inventory_hostname }}" requires patching.'
       description: "The following packages need to be update: \n {{ dnf_update_status.results }}"
     register: new_ticket
-    when: ((dnf_update_status is changed) and (changerequest_exist == "false"))
+    when: ((dnf_update_status is defined) and (changerequest_exist == "false"))
 
   - name: ServiceNow Change Request Number
     ansible.builtin.debug:
