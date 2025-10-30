@@ -47,7 +47,9 @@
         Server {{ inventory_hostname }} has {{ dnf_updates.results | length }} pending package updates.
         
         The following packages are ready for update:
-        {{ dnf_updates.results | map(attribute='name') | join('\n') }}
+        {% for pkg in dnf_updates.results -%}
+        - {{ pkg.name }}: {{ pkg.version }}
+        {% endfor %}
     register: new_ticket
     when: ((dnf_updates is defined) and (changerequest_exist == "false"))
 
