@@ -8,11 +8,8 @@
   tasks:
   - name: Check all installed packages available using DNF module
     ansible.builtin.dnf:
-      name: '*'
-      state: latest
+      list: updates
       update_cache: true
-      update_only: true
-      download_only: true
     register: dnf_update_status
 
   - name: Check if an active change request exists
