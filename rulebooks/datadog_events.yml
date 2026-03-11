@@ -8,7 +8,7 @@
 
   rules:
     - name: Datadog Alert - Web Monitoring
-      condition: event.payload contains "Web App is DOWN" 
+      condition: event.payload.alert_type == "error" 
       action:
         run_job_template:
           name: "EDA - Linux Deploy APP With Podman"
