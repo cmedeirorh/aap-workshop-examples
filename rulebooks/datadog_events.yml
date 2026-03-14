@@ -20,7 +20,7 @@
       condition: 
         all:
           - event.payload.alert_type == "error" 
-          - event.payload.alert_title is match ("SNMP Interface Status Alert")
+          - event.payload.alert_title == "SNMP Interface Status Alert"
       action:
         run_job_template:
           name: "EDA - Linux Deploy APP With Podman"
