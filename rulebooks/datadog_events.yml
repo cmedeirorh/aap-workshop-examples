@@ -17,7 +17,10 @@
             limit: "{{ event.payload.hostname }}"
           
     - name: Datadog Alert - SNMP Metric
-      condition: (event.payload.alert_type == "error") and (event.payload.alert_title starts with "SNMP Interface Status Alert")
+      condition: 
+        all:
+          - event.payload.alert_type == "error" 
+          - event.payload.alert_title is match ("SNMP Interface Status Alert")
       action:
         run_job_template:
           name: "EDA - Linux Deploy APP With Podman"
