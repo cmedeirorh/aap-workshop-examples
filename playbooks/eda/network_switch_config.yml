@@ -22,7 +22,7 @@
 
   - name: Find the host
     ansible.builtin.set_fact:
-      _host: host_list[2]
+      _host: "{{ host_list[2] }}"
       
   - name: Debug
     ansible.builtin.debug:
