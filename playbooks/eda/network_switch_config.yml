@@ -28,6 +28,7 @@
   hosts: "{{ _host }}"
   gather_facts: false
   
+  tasks:
   - name: Enable Interfaces on Switch
     cisco.ios.ios_interfaces:
       config:
