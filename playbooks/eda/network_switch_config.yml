@@ -32,7 +32,7 @@
   hosts: "{{ hostvars['localhost']['_host'] }}"
   gather_facts: false
   vars:
-    interface: "{{ hostvars['localhost']['tags_parsed.interface_index'] }}"
+    interface: "{{ hostvars['localhost']['_interface'] }}"
   
   tasks:
   - name: Enable Interfaces on Switch
