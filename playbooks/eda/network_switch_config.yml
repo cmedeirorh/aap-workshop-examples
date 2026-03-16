@@ -16,9 +16,9 @@
         }}
     loop: "{{ test.split(',') }}"  
 
-- name: Split the string
-      ansible.builtin.set_fact:
-        host_list: "{{ tags_parsed.host.split(':') }}"
+  - name: Split the string
+    ansible.builtin.set_fact:
+      host_list: "{{ tags_parsed.host.split(':') }}"
         
   - name: Debug
     ansible.builtin.debug:
