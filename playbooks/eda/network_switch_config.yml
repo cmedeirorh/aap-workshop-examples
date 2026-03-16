@@ -32,3 +32,4 @@
       state: merged
     delegate_to: "{{ _host }}"
     delegate_facts: true
+    connection: network_cli
