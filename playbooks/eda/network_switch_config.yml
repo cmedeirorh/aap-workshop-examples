@@ -20,4 +20,4 @@
     
   - name: Debug
     ansible.builtin.debug:
-      var: parsed_test
+      var: parsed_test.interface_index
