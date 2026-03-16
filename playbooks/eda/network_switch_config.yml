@@ -4,9 +4,10 @@
   gather_facts: false
   vars:
     targer_interface: "GigabitEthernet0/2"
+    test_json: "{{ test | from_json }}"
     #targer_interface: "GigabitEthernet0/{{ interface_index }}"
  
   tasks:
   - name: Debug
     ansible.builtin.debug:
-      msg: {{ (test.split(',') | select('search', 'interface_index') | first).split(':')[1] }}"
+      msg: {{ test }}"
