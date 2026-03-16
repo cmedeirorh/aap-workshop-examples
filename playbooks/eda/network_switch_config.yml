@@ -25,7 +25,7 @@
       _host: "{{ host_list[2] }}"
 
 - name: Manage Switch
-  hosts: "{{ _host }}"
+  hosts: "{{ hostvars['localhost']['_host'] }}"
   gather_facts: false
   
   tasks:
