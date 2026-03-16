@@ -10,4 +10,4 @@
   tasks:
   - name: Debug
     ansible.builtin.debug:
-      msg: {{ test_json }}"
+      var: {{ test_json }}"
