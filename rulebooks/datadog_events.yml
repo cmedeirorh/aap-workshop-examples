@@ -25,4 +25,4 @@
           job_args:
             limit: "{{ event.payload.hostname }}"
           extra_vars: 
-            test: "{{ alert_tags }}"
+            test: "{{ event.payload.alert_tags }}"
