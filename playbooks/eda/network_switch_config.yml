@@ -9,4 +9,4 @@
   tasks:
   - name: Debug
     ansible.builtin.debug:
-      var: "{{ test.host }}"
+      var: "{{ test }}"
