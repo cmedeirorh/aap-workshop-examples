@@ -1,11 +1,9 @@
 ---
-- name: Manage Cisco Switch
+- name: Convert string into dict
   hosts: localhost
   gather_facts: false
   vars:
-    targer_interface: "GigabitEthernet0/2"
     tags_parsed: {}
-    #targer_interface: "GigabitEthernet0/{{ interface_index }}"
  
   tasks:
   - name: Build the dictionary by looping through comma-separated items
@@ -20,11 +18,4 @@
     
   - name: Debug
     ansible.builtin.debug:
-      msg: "GigabitEthernet0/{{ tags_parsed.interface_index }}"
-      
-  - name: Administratively Enable Interfaces on Switch
-    cisco.ios.ios_interfaces:
-      config:
-        - name: "GigabitEthernet0/{{ tags_parsed.interface_index }}"
-          enabled: true
-      state: merged
+      msg: "{{ tags_parsed.host }}"
