@@ -27,7 +27,8 @@
 - name: Manage Switch
   hosts: "{{ _host }}"
   gather_facts: false
-  
+
+  tasks:
   - name: Administratively Enable Interfaces on Switch
     cisco.ios.ios_interfaces:
       config:
