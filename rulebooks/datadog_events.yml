@@ -20,7 +20,7 @@
       condition: (event.payload.alert_type == "error") and (event.payload.alert_tags is search ("interface_down"))
       action:
         run_job_template:
-          name: "EDA - Linux Deploy APP With Podman"
+          name: "EDA - Network Config"
           organization: Default
           job_args:
             limit: "{{ event.payload.hostname }}"
