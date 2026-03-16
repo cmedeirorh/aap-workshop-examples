@@ -23,6 +23,6 @@
           name: "EDA - Network Config"
           organization: Default
           job_args:
-            limit: "{{ event.payload.hostname }}"
+            #limit: "{{ event.payload.hostname }}"
             extra_vars: 
               test: "{{ event.payload.alert_tags }}"
