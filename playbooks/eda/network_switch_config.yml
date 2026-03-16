@@ -1,6 +1,6 @@
 ---
 - name: Manage Cisco Switch
-  hosts: all
+  hosts: localhost
   gather_facts: false
   vars:
     targer_interface: "GigabitEthernet0/2"
