@@ -26,7 +26,7 @@
 
   - name: Administratively Enable Interfaces on Switch
     cisco.ios.ios_interfaces:
-    delegate_to: "{{ _host }}"
+    delegate_to: "{{ host_list[2] }}"
       config:
         - name: "GigabitEthernet0/{{ tags_parsed.interface_index }}"
           enabled: true
