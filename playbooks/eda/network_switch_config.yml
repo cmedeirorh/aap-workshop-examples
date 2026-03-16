@@ -6,7 +6,7 @@
     tags_parsed: {}
  
   tasks:
-  - name: Build the dictionary by looping through comma-separated items
+  - name: Build the dictionary
     set_fact:
       tags_parsed: >-
         {{
@@ -15,7 +15,11 @@
           })
         }}
     loop: "{{ test.split(',') }}"  
-    
+
+- name: Split the string
+      ansible.builtin.set_fact:
+        host_list: "{{ tags_parsed.host.split(':') }}"
+        
   - name: Debug
     ansible.builtin.debug:
-      msg: "{{ tags_parsed.host }}"
+      msg: "{{ host_list[3] }}"
