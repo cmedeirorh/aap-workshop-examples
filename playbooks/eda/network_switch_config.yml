@@ -21,7 +21,5 @@
       host_list: "{{ tags_parsed.host.split(':') }}"
 
   - name: Debug
-      ansible.builtin.debug:
-        var: host_list
-        
-
+    ansible.builtin.debug:
+      var: host_list
