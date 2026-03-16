@@ -20,11 +20,8 @@
     ansible.builtin.set_fact:
       host_list: "{{ tags_parsed.host.split(':') }}"
 
-  - name: Enable Interfaces on Switch
-    cisco.ios.ios_interfaces:
-      config:
-        - name: "GigabitEthernet0/{{ tags_parsed.interface_index }}"
-          enabled: true
-      state: merged
-    delegate_to: "{{ host_list[2] }}"
-    delegate_facts: true
+  - name: Debug
+      ansible.builtin.debug:
+        var: host_list
+        
+
