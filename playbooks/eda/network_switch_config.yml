@@ -24,15 +24,10 @@
     ansible.builtin.set_fact:
       _host: "{{ host_list[2] }}"
 
-- name: Manage Switch
-  hosts: "{{ _host }}"
-  gather_facts: false
-
-  tasks:
   - name: Administratively Enable Interfaces on Switch
     cisco.ios.ios_interfaces:
+    delegate_to: "{{ _host }}"
       config:
         - name: "GigabitEthernet0/{{ tags_parsed.interface_index }}"
           enabled: true
       state: merged
-
