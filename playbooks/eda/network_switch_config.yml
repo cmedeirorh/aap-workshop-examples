@@ -4,10 +4,20 @@
   gather_facts: false
   vars:
     targer_interface: "GigabitEthernet0/2"
-    test_json: "{{ test | from_json }}"
+    parsed_test: {}
     #targer_interface: "GigabitEthernet0/{{ interface_index }}"
  
   tasks:
+  - name: Build the dictionary by looping through comma-separated items
+    set_fact:
+      parsed_test: >-
+        {{
+          parsed_test | combine({
+            (item.split(':', 1)[0]): (item.split(':', 1)[1] if ':' in item else true)
+          })
+        }}
+    loop: "{{ test.split(',') }}"  
+    
   - name: Debug
     ansible.builtin.debug:
-      var: "{{ test_json }}"
+      var: "{{ parsed_test }}"
