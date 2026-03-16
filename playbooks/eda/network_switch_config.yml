@@ -7,8 +7,8 @@
  
   tasks:
   - name: Build the dictionary
-    set_fact:
-      ansible.builtin.tags_parsed: >-
+    ansible.builtin.set_fact:
+      tags_parsed: >-
         {{
           tags_parsed | combine({
             (item.split(':', 1)[0]): (item.split(':', 1)[1] if ':' in item else true)
