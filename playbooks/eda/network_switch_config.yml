@@ -21,7 +21,7 @@
       host_list: "{{ tags_parsed.host.split(':') }}"
 
 - name: Manage Switch
-  hosts: localhost
+  hosts: "{{ host_list[2] }}"
   gather_facts: false
  
   tasks:
