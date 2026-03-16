@@ -19,8 +19,11 @@
   - name: Split the string
     ansible.builtin.set_fact:
       host_list: "{{ tags_parsed.host.split(':') }}"
+
+  - name: Get host
+    ansible.builtin.set_fact:
       host: "{{ host_list[2] }}"
-        
+      
   - name: Debug
     ansible.builtin.debug:
       var: host
