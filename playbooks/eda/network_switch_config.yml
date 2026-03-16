@@ -8,7 +8,7 @@
   tasks:
   - name: Build the dictionary
     set_fact:
-      tags_parsed: >-
+      ansible.builtin.tags_parsed: >-
         {{
           tags_parsed | combine({
             (item.split(':', 1)[0]): (item.split(':', 1)[1] if ':' in item else true)
@@ -22,4 +22,4 @@
         
   - name: Debug
     ansible.builtin.debug:
-      msg: "{{ host_list[3] }}"
+      msg: "{{ host_list[2] }}"
