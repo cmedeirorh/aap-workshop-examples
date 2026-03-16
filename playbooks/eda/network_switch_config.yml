@@ -20,6 +20,10 @@
     ansible.builtin.set_fact:
       host_list: "{{ tags_parsed.host.split(':') }}"
 
+  - name: Find the host
+    ansible.builtin.set_fact:
+      _host: host_list[2]
+      
   - name: Debug
     ansible.builtin.debug:
-      var: host_list
+      var: _host
