@@ -20,7 +20,12 @@
     ansible.builtin.set_fact:
       host_list: "{{ tags_parsed.host.split(':') }}"
 
-  - name: Administratively Enable Interfaces on Switch
+- name: Manage Switch
+  hosts: localhost
+  gather_facts: false
+ 
+  tasks:
+  - name: Enable Interfaces on Switch
     cisco.ios.ios_interfaces:
     delegate_to: localhost
       config:
