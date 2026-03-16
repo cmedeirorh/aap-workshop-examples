@@ -9,4 +9,4 @@
   tasks:
   - name: Debug
     ansible.builtin.debug:
-      var: {{ (test.split(',') | select('search', 'interface_index') | first).split(':')[1] }}"
+      msg: {{ (test.split(',') | select('search', 'interface_index') | first).split(':')[1] }}"
