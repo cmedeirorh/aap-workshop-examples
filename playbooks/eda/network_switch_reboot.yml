@@ -22,8 +22,13 @@
   - name: Identify Hypervisor
     ansible.builtin.set_fact:
       _hypervisor: "{{ tags_parsed.agent_host }}"
+
+  - name: Check the current status of the VM
+    ansible.builtin.shell: "virsh domstate {{ vm_name }}"
+    register: vm_status
+    changed_when: false
       
-  - name: "Issue a graceful reboot"
+  - name: Issue a graceful reboot
     ansible.builtin.shell: "virsh start {{ vm_name }}"
     register: reboot_result
-    changed_when: "'is being rebooted' in reboot_result.stdout"
+    when: "'shut off' in vm_status.stdout"
