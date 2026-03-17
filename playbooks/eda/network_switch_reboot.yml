@@ -1,6 +1,6 @@
 ---
 - name: Recover from unresponsive device
-  hosts: localhost
+  hosts: bastion
   gather_facts: false
   vars:
     tags_parsed: {}
