@@ -1,0 +1,51 @@
+---
+- name: Convert string into dict
+  hosts: localhost
+  gather_facts: false
+  vars:
+    tags_parsed: {}
+ 
+  tasks:
+  - name: Build the dictionary
+    ansible.builtin.set_fact:
+      tags_parsed: >-
+        {{
+          tags_parsed | combine({
+            (item.split(':', 1)[0]): (item.split(':', 1)[1] if ':' in item else true)
+          })
+        }}
+    loop: "{{ tags.split(',') }}"  
+
+  - name: Identify the Switch/Host
+    ansible.builtin.set_fact:
+      _host: "{{ tags_parsed.device_hostname }}"
+  
+  - name: Identify Hypervisor
+    ansible.builtin.set_fact:
+      _hypervisor: "{{ tags_parsed.agent_host }}"
+      
+- name: Reboot Switch VM
+  hosts: "{{ hostvars['localhost']['_hypervisor'] }}"
+  gather_facts: false
+  vars:
+    vm_name: "{{ hostvars['localhost']['_host'] }}"
+  
+  tasks:
+  - name: "Gracefully shut down the VM"
+    community.libvirt.virt:
+      name: "{{ vm_name }}"
+      state: shutdown
+      
+  - name: "METHOD 1: Wait for the VM to finish shutting down"
+    community.libvirt.virt:
+      name: "{{ vm_name }}"
+      command: status
+    register: vm_status
+    until: vm_status.status == 'shutdown' or vm_status.status == 'shut off'
+    retries: 30       # Wait up to 2.5 minutes (30 retries * 5 seconds)
+    delay: 5
+      
+  - name: "METHOD 1: Power the VM back on"
+    community.libvirt.virt:
+      name: "{{ vm_name }}"
+      state: running
