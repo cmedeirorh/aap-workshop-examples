@@ -24,6 +24,6 @@
       _hypervisor: "{{ tags_parsed.agent_host }}"
       
   - name: "Issue a graceful reboot"
-    ansible.builtin.shell: "ifconfig"
+    ansible.builtin.shell: "virsh start {{ vm_name }}"
     register: reboot_result
     changed_when: "'is being rebooted' in reboot_result.stdout"
