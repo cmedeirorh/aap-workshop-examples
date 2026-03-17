@@ -14,7 +14,7 @@
             (item.split(':', 1)[0]): (item.split(':', 1)[1] if ':' in item else true)
           })
         }}
-    loop: "{{ test.split(',') }}"  
+    loop: "{{ tags.split(',') }}"  
 
   - name: Split the string
     ansible.builtin.set_fact:
