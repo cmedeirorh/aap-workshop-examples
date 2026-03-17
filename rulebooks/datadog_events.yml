@@ -15,16 +15,6 @@
           organization: Default
           job_args:
             limit: "{{ event.payload.hostname }}"
-          
-    - name: Datadog - SNMP Alert Interface Down
-      condition: (event.payload.alert_type == "error") and (event.payload.alert_tags is search ("interface_down"))
-      action:
-        run_job_template:
-          name: "EDA - Network Config"
-          organization: Default
-          job_args:
-            extra_vars: 
-              tags: "{{ event.payload.alert_tags }}"
 
     - name: Datadog - SNMP Alert Host Down
       condition: (event.payload.alert_type == "error") and (event.payload.alert_tags is search ("device_down"))
@@ -35,3 +25,15 @@
           job_args:
             extra_vars: 
               tags: "{{ event.payload.alert_tags }}"
+              
+    - name: Datadog - SNMP Alert Interface Down
+      condition: (event.payload.alert_type == "error") and (event.payload.alert_tags is search ("interface_down"))
+      action:
+        run_job_template:
+          name: "EDA - Network Config"
+          organization: Default
+          job_args:
+            extra_vars: 
+              tags: "{{ event.payload.alert_tags }}"
+
+
