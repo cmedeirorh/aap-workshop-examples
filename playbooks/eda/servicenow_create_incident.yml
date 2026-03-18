@@ -4,7 +4,21 @@
   gather_facts: no
   become: true
 
-  tasks:      
+  tasks:
+  - name: Build the dictionary
+    ansible.builtin.set_fact:
+      tags_parsed: >-
+        {{
+          tags_parsed | combine({
+            (item.split(':', 1)[0]): (item.split(':', 1)[1] if ':' in item else true)
+          })
+        }}
+    loop: "{{ tags.split(',') }}"  
+
+  - name: Get the Node IP
+    ansible.builtin.set_fact:
+      switch: "{{ tags_parsed.source_host }}"
+    
   - name: Create a ServiceNow Incident
     servicenow.itsm.incident:
       instance:
@@ -15,7 +29,7 @@
       caller: "ansible"
       urgency: high
       impact: high
-      short_description: "Monitoring has identified a problem on {{ tags }}"
+      short_description: "Monitoring has identified a problem on {{ switch }}"
       description: "{{ ansible_eda }}"
     register: new_ticket
 
