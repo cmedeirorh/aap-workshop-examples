@@ -19,7 +19,17 @@
   - name: Get the Node IP
     ansible.builtin.set_fact:
       switch: "{{ tags_parsed.source_host }}"
-    
+
+  - name: Enable Interfaces on Switch
+    cisco.ios.ios_command:
+      commands: "show logging"
+    register: switch_logs
+    delegate_to: "{{ switch }}"
+
+  - name: Convert the last 20 log lines into a single text block
+    ansible.builtin.set_fact:
+      formatted_logs: "{{ switch_logs.stdout_lines[0][-20:] | join('\n') }}"
+        
   - name: Create a ServiceNow Incident
     servicenow.itsm.incident:
       instance:
@@ -31,7 +41,7 @@
       urgency: high
       impact: high
       short_description: "Monitoring has identified a problem on {{ switch }}"
-      description: "{{ ansible_eda.event.payload.alert_title }}"
+      description: "{{ formatted_logs }}"
     register: new_ticket
 
   - name: ServiceNow Ticket Number
