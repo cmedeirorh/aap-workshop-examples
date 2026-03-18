@@ -2,7 +2,8 @@
 - name: Create ServiceNow Incident from EDA event
   hosts: localhost
   gather_facts: no
-  become: true
+  vars:
+    tags_parsed: {}  
 
   tasks:
   - name: Build the dictionary
