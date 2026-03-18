@@ -18,7 +18,7 @@
 
   - name: Get the Node IP
     ansible.builtin.set_fact:
-      switch: "{{ tags_parsed }}"
+      switch: "{{ tags_parsed.source_host }}"
     
   - name: Create a ServiceNow Incident
     servicenow.itsm.incident:
