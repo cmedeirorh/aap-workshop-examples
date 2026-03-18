@@ -40,7 +40,7 @@
       caller: "ansible"
       urgency: high
       impact: high
-      short_description: "Monitoring has identified a problem on {{ switch }}"
+      short_description: "Monitoring Alert - {{ ansible_eda.event.payload.alert_title }}"
       description: "{{ formatted_logs }}"
     register: new_ticket
 
