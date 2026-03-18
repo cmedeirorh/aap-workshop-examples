@@ -15,8 +15,8 @@
       caller: "ansible"
       urgency: high
       impact: high
-      short_description: "Monitoring has identified a problem on {{ _hosts }}"
-      description: "{{ _payload }}"
+      short_description: "Monitoring has identified a problem on {{ tags }}"
+      description: "{{ ansible_eda }}"
     register: new_ticket
 
   - name: ServiceNow Ticket Number
