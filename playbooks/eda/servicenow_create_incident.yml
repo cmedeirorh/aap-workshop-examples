@@ -1,6 +1,6 @@
 ---
 - name: Create ServiceNow Incident from EDA event
-  hosts: '{{ _hosts }}'
+  hosts: localhost
   gather_facts: no
   become: true
 
