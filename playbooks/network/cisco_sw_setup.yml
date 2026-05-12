@@ -1,0 +1,59 @@
+---
+- name: Initial Configuration for Cisco IOS Switch
+  hosts: switches
+  gather_facts: false
+  connection: network_cli
+
+  # Variables to easily customize your setup
+  vars:
+    new_admin_user: "netadmin"
+    new_admin_pass: "SuperSecretPass123!"
+    snmp_community_string: "watch-ro"
+    snmp_location: "lab1"
+    snmp_contact: "admin@yourcompany.com"
+    
+  tasks:
+    - name: Create local admin user with privilege level 15
+      cisco.ios.ios_user:
+        name: "{{ new_admin_user }}"
+        privilege: 15
+        password: "{{ new_admin_pass }}"
+        state: present
+
+    - name: Configure SNMPv2c Community, Location, and Contact
+      cisco.ios.ios_config:
+        lines:
+          - snmp-server community {{ snmp_community_string }} RO
+          - snmp-server location {{ snmp_location }}
+          - snmp-server contact {{ snmp_contact }}
+
+    - name: Enforce SSHv2 and secure VTY lines
+      cisco.ios.ios_config:
+        lines:
+          - transport input ssh
+          - login local
+        parents: line vty 0 15
+        before:
+          - ip ssh version 2
+        
+    - name: Ensure specific ports are enabled (no shutdown)
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet1/0/1
+            description: "Management"
+            enabled: true
+          - name: GigabitEthernet1/0/2
+            description: "Port1"
+            enabled: true
+          - name: GigabitEthernet1/0/3
+            description: "Port2"
+            enabled: true
+          - name: GigabitEthernet1/0/4
+            description: "Port3"
+            enabled: true
+        state: merged
+
+    # 4. Save Configuration
+    - name: Save running-config to startup-config
+      cisco.ios.ios_config:
+        save_when: modified
