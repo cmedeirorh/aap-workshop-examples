@@ -13,6 +13,10 @@
     snmp_contact: "admin@yourcompany.com"
     
   tasks:
+    - name: Configure IOS Hostname
+      cisco.ios.ios_system:
+        hostname: "{{ inventory_hostname }}"
+        
     - name: Create local admin user with privilege level 15
       cisco.ios.ios_user:
         name: "{{ new_admin_user }}"
