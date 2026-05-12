@@ -8,7 +8,7 @@
   vars:
     new_admin_user: "admin"
     new_admin_pass: "SuperSecretPass123!"
-    domain: "example.com"
+    domain_name: "example.com"
     snmp_community_string: "watch-ro"
     snmp_location: "lab1"
     snmp_contact: "admin@example.com"
@@ -18,7 +18,7 @@
     - name: Configure IOS Hostname
       cisco.ios.ios_system:
         hostname: "{{ inventory_hostname }}"
-        domain_name: "{{ domain }}"
+        domain_name: "{{ domain_name }}"
 
     - name: Configure Message of the Day (MOTD) banner
       cisco.ios.ios_banner:
@@ -67,7 +67,7 @@
             enabled: true
         state: merged
 
-- name: Configure edge ports with Data and Voice VLANs
+    - name: Configure edge ports with Data and Voice VLANs
       cisco.ios.ios_l2_interfaces:
         config:
           - name: GigabitEthernet3
