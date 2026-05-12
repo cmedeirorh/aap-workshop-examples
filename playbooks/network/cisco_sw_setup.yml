@@ -40,17 +40,17 @@
     - name: Ensure specific ports are enabled (no shutdown)
       cisco.ios.ios_interfaces:
         config:
-          - name: GigabitEthernet1/0/1
+          - name: GigabitEthernet1
             description: "Management"
             enabled: true
-          - name: GigabitEthernet1/0/2
-            description: "Port1"
-            enabled: true
-          - name: GigabitEthernet1/0/3
+          - name: GigabitEthernet2
             description: "Port2"
             enabled: true
-          - name: GigabitEthernet1/0/4
+          - name: GigabitEthernet3
             description: "Port3"
+            enabled: true
+          - name: GigabitEthernet4
+            description: "Port4"
             enabled: true
         state: merged
 
