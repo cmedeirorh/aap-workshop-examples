@@ -17,7 +17,8 @@
       cisco.ios.ios_user:
         name: "{{ new_admin_user }}"
         privilege: 15
-        password: "{{ new_admin_pass }}"
+        configured_password: "{{ new_admin_pass }}"
+        password_type: secret
         state: present
 
     - name: Configure SNMPv2c Community, Location, and Contact
