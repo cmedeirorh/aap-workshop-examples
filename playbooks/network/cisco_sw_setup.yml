@@ -70,12 +70,12 @@
     - name: Configure edge ports with Data and Voice VLANs
       cisco.ios.ios_l2_interfaces:
         config:
-          - name: GigabitEthernet3
+          - name: GigabitEthernet4/0
             access:
               vlan: 10
             voice:
               vlan: 20
-          - name: GigabitEthernet4
+          - name: GigabitEthernet4/1
             access:
               vlan: 10
             voice:
