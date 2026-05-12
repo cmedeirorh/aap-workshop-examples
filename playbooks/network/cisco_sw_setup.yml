@@ -8,14 +8,26 @@
   vars:
     new_admin_user: "admin"
     new_admin_pass: "SuperSecretPass123!"
+    domain: "example.com"
     snmp_community_string: "watch-ro"
     snmp_location: "lab1"
-    snmp_contact: "admin@yourcompany.com"
+    snmp_contact: "admin@example.com"
     
   tasks:
     - name: Configure IOS Hostname
       cisco.ios.ios_system:
         hostname: "{{ inventory_hostname }}"
+        domain_name: "{{ domain }}"
+
+    - name: Configure Message of the Day (MOTD) banner
+      cisco.ios.ios_banner:
+        banner: motd
+        text: |
+          ***********************************************************
+          * UNAUTHORIZED ACCESS TO THIS NETWORK DEVICE IS PROHIBITED. *
+          * Managed by Ansible Automation. All actions are monitored. *
+          ***********************************************************
+        state: present        
         
     - name: Create local admin user with privilege level 15
       cisco.ios.ios_user:
@@ -58,7 +70,20 @@
             enabled: true
         state: merged
 
-    # 4. Save Configuration
+- name: Configure edge ports with Data and Voice VLANs
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet3
+            access:
+              vlan: 10
+            voice:
+              vlan: 20
+          - name: GigabitEthernet4
+            access:
+              vlan: 10
+            voice:
+              vlan: 20
+ 
     - name: Save running-config to startup-config
       cisco.ios.ios_config:
         save_when: modified
