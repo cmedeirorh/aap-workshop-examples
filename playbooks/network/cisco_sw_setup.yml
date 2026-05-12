@@ -6,7 +6,7 @@
 
   # Variables to easily customize your setup
   vars:
-    new_admin_user: "netadmin"
+    new_admin_user: "admin"
     new_admin_pass: "SuperSecretPass123!"
     snmp_community_string: "watch-ro"
     snmp_location: "lab1"
