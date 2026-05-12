@@ -12,6 +12,7 @@
     snmp_community_string: "watch-ro"
     snmp_location: "lab1"
     snmp_contact: "admin@example.com"
+    motd: "Add your text here"
     
   tasks:
     - name: Configure IOS Hostname
@@ -22,11 +23,7 @@
     - name: Configure Message of the Day (MOTD) banner
       cisco.ios.ios_banner:
         banner: motd
-        text: |
-          ***********************************************************
-          * UNAUTHORIZED ACCESS TO THIS NETWORK DEVICE IS PROHIBITED. *
-          * Managed by Ansible Automation. All actions are monitored. *
-          ***********************************************************
+        text: "{{ motd }}"
         state: present        
         
     - name: Create local admin user with privilege level 15
