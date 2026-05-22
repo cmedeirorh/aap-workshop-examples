@@ -74,11 +74,11 @@
     - name: Create Base VLANs
       cisco.ios.ios_vlans:
         config:
-          - name: "{{ item.value }}"
-            vlan_id: "{{ item.key | int }}"
+          - name: USERS
+            vlan_id: 10
+            state: active
         state: merged
-      loop: "{{ vlans_to_create | dict2items }}"
-
+      
     - name: Assign VLANs to Access Ports
       cisco.ios.ios_l2_interfaces:
         config:
