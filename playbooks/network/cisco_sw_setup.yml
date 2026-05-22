@@ -13,10 +13,19 @@
     snmp_location: "lab1"
     snmp_contact: "admin@example.com"
     motd: "Add your text here"
-    vlans_to_create:
-      10: 'USERS'
-      20: 'SERVERS'
-      30: 'GUESTS'
+    interfaces_to_enable:
+    - name: GigabitEthernet1
+      description: "Management"
+      enabled: true
+    - name: GigabitEthernet2
+      description: "Users"
+      enabled: true
+    - name: GigabitEthernet3
+      description: "Servers"
+      enabled: true
+    - name: GigabitEthernet4
+      description: "Guests"
+      enabled: true
     
   tasks:
     - name: Configure IOS Hostname
@@ -56,19 +65,8 @@
         
     - name: Ensure specific ports are enabled (no shutdown)
       cisco.ios.ios_interfaces:
-        config:
-          - name: GigabitEthernet1
-            description: "Management"
-            enabled: true
-          - name: GigabitEthernet2
-            description: "Users"
-            enabled: true
-          - name: GigabitEthernet3
-            description: "Servers"
-            enabled: true
-          - name: GigabitEthernet4
-            description: "Guests"
-            enabled: true
+        config: "{{ interfaces_to_enable }}"
+        state: merged
         state: merged
         
     - name: Save running-config to startup-config
