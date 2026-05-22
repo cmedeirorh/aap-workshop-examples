@@ -67,7 +67,6 @@
       cisco.ios.ios_interfaces:
         config: "{{ interfaces_to_enable }}"
         state: merged
-        state: merged
         
     - name: Save running-config to startup-config
       cisco.ios.ios_config:
