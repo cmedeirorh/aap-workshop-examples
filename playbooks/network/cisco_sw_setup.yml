@@ -6,7 +6,7 @@
 
   # Variables to easily customize your setup
   vars:
-    new_admin_user: "admin"
+    new_admin_user: "netadmin"
     new_admin_pass: "SuperSecretPass123!"
     domain_name: "example.com"
     snmp_community_string: "watch-ro"
@@ -57,16 +57,46 @@
             description: "Management"
             enabled: true
           - name: GigabitEthernet2
-            description: "Port2"
+            description: "Users"
             enabled: true
           - name: GigabitEthernet3
-            description: "Port3"
+            description: "Servers"
             enabled: true
           - name: GigabitEthernet4
-            description: "Port4"
+            description: "Guests"
             enabled: true
         state: merged
 
+    - name: Create Base VLANs
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 10
+            name: Users
+          - vlan_id: 20
+            name: Servers
+          - vlan_id: 30
+            name: Guests
+        state: merged
+
+- name: 10. Assign VLANs to Access Ports
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet2
+            mode: access
+            access:
+              vlan: 10
+              
+          - name: GigabitEthernet3
+            mode: access
+            access:
+              vlan: 20
+              
+          - name: GigabitEthernet4
+            mode: access
+            access:
+              vlan: 30
+        state: merged
+        
     - name: Save running-config to startup-config
       cisco.ios.ios_config:
         save_when: modified
