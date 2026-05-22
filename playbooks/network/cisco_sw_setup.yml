@@ -78,7 +78,7 @@
             name: Guests
         state: merged
 
-- name: 10. Assign VLANs to Access Ports
+    - name: Assign VLANs to Access Ports
       cisco.ios.ios_l2_interfaces:
         config:
           - name: GigabitEthernet2
