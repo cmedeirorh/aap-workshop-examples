@@ -13,6 +13,10 @@
     snmp_location: "lab1"
     snmp_contact: "admin@example.com"
     motd: "Add your text here"
+    vlans_to_create:
+      10: 'USERS'
+      20: 'SERVERS'
+      30: 'GUESTS'
     
   tasks:
     - name: Configure IOS Hostname
@@ -70,13 +74,10 @@
     - name: Create Base VLANs
       cisco.ios.ios_vlans:
         config:
-          - vlan_id: 10
-            name: Users
-          - vlan_id: 20
-            name: Servers
-          - vlan_id: 30
-            name: Guests
-        state: merged
+          - name: "{{ item.value }}"
+            vlan_id: "{{ item.key | int }}"
+        state: present
+      loop: "{{ vlans_to_create | dict2items }}"
 
     - name: Assign VLANs to Access Ports
       cisco.ios.ios_l2_interfaces:
