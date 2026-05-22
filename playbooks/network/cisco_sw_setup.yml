@@ -78,7 +78,7 @@
             vlan_id: "{{ item.key | int }}"
         state: present
       loop: "{{ vlans_to_create | dict2items }}"
-      state: merged
+        state: merged
 
     - name: Assign VLANs to Access Ports
       cisco.ios.ios_l2_interfaces:
