@@ -1,0 +1,54 @@
+---
+- name: Modify Cloud Infra
+  hosts: localhost
+  gather_facts: false
+  environment:
+    AWS_ACCESS_KEY: '{{ aws_access_key }}'
+    AWS_SECRET_KEY: '{{ aws_secret_key }}'
+vars:
+    aws_region: "us-east-2"
+    vpc_name: "ansible-demo"
+    sg_name: "ansible-demo"
+    sg_description: "AWS demo SG for the demo"
+    sg_inbound_rules:
+      - port: 22
+        cidr: "0.0.0.0/0"
+        desc: "Allow SSH inbound"
+      - port: 80
+        cidr: "0.0.0.0/0"
+        desc: "Allow HTTP inbound"
+      - port: 443
+        cidr: "0.0.0.0/0"
+        desc: "Allow HTTPS inbound"
+      - port: 8080
+        cidr: "0.0.0.0/0"
+        desc: "Allow Custom App inbound on port 8080"
+
+  tasks:
+    - name: Look up VPC ID using the VPC Name tag
+      amazon.aws.ec2_vpc_net_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:Name": "{{ vpc_name }}"
+      register: vpc_info
+
+    - name: Fail if the VPC was not found
+      ansible.builtin.fail:
+        msg: "Could not find a VPC named '{{ vpc_name }}' in region {{ aws_region }}"
+      when: vpc_info.vpcs | length == 0
+
+    - name: Ensure specific TCP ports are open
+      amazon.aws.ec2_security_group:
+        name: "{{ sg_name }}"
+        description: "{{ sg_description }}"
+        vpc_id: "{{ vpc_info.vpcs[0].vpc_id }}" 
+        region: "{{ aws_region }}"
+        rules:
+          - proto: tcp
+            ports:
+              - "{{ item.port }}"
+            cidr_ip: "{{ item.cidr }}"
+            rule_desc: "{{ item.desc }}"
+      loop: "{{ sg_inbound_rules }}"
+      loop_control:
+        label: "Port {{ item.port }}"
