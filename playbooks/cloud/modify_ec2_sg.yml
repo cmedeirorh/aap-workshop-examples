@@ -24,7 +24,7 @@
     - name: Ensure specific TCP ports are open
       amazon.aws.ec2_security_group:
         name: "{{ sg_name }}"
-        #description: "{{ sg_description }}"
+        description: "{{ sg_description }}"
         vpc_id: "{{ vpc_info.vpcs[0].vpc_id }}" 
         region: "{{ aws_region }}"
         rules:
@@ -35,7 +35,7 @@
               - 8080
               - 22
             cidr_ip: 0.0.0.0/0
-            rule_desc: "Allow application ports"
+            #rule_desc: "Allow application ports"
       register: sg_result
     
     - name: Display Security Group Information
