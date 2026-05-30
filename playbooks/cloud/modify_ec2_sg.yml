@@ -21,6 +21,16 @@
         msg: "Could not find a VPC named '{{ vpc_name }}' in region {{ aws_region }}"
       when: vpc_info.vpcs | length == 0
 
+    - name: Purge rules before adding, workaround due to policy restrictions
+      amazon.aws.ec2_security_group:
+        name: "{{ sg_name }}"
+        description: "{{ sg_description }}"
+        vpc_id: "{{ vpc_info.vpcs[0].vpc_id }}" 
+        region: "{{ aws_region }}"
+        rules:[]
+        purge_rules: true
+      register: sg_cleared
+        
     - name: Ensure specific TCP ports are open
       amazon.aws.ec2_security_group:
         name: "{{ sg_name }}"
