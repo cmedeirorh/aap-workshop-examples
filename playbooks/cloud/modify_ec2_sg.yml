@@ -27,7 +27,7 @@
         description: "{{ sg_description }}"
         vpc_id: "{{ vpc_info.vpcs[0].vpc_id }}" 
         region: "{{ aws_region }}"
-        rules:[]
+        rules: []
         purge_rules: true
       register: sg_cleared
         
