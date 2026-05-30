@@ -35,7 +35,7 @@
               - 8080
               - 22
             cidr_ip: 0.0.0.0/0
-            #rule_desc: "Allow application ports"
+            rule_desc: "Allow application ports"
       register: sg_result
     
     - name: Display Security Group Information
