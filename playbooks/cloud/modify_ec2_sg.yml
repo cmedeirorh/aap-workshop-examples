@@ -7,19 +7,6 @@
     vpc_name: "ansible-demo"
     sg_name: "ansible-demo"
     sg_description: "AWS demo SG for the demo"
-    sg_inbound_rules:
-      - port: 22
-        cidr: "0.0.0.0/0"
-        desc: "Allow SSH inbound"
-      - port: 80
-        cidr: "0.0.0.0/0"
-        desc: "Allow HTTP inbound"
-      - port: 443
-        cidr: "0.0.0.0/0"
-        desc: "Allow HTTPS inbound"
-      - port: 8080
-        cidr: "0.0.0.0/0"
-        desc: "Allow Custom App inbound on port 8080"
 
   tasks:
     - name: Look up VPC ID using the VPC Name tag
@@ -43,9 +30,14 @@
         rules:
           - proto: tcp
             ports:
-              - "{{ item.port }}"
-            cidr_ip: "{{ item.cidr }}"
-            rule_desc: "{{ item.desc }}"
-      loop: "{{ sg_inbound_rules }}"
-      loop_control:
-        label: "Port {{ item.port }}"
+              - 80
+              - 443
+              - 8080
+              - 22
+            cidr_ip: 0.0.0.0/0
+            rule_desc: "Allow application ports"
+      register: sg_result
+    
+    - name: Display Security Group Information
+      ansible.builtin.debug:
+        msg: "Security Group ID: {{ sg_result.group_id }} has been updated successfully."
