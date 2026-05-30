@@ -2,10 +2,7 @@
 - name: Modify Cloud Infra
   hosts: localhost
   gather_facts: false
-  environment:
-    AWS_ACCESS_KEY: '{{ aws_access_key }}'
-    AWS_SECRET_KEY: '{{ aws_secret_key }}'
-vars:
+  vars:
     aws_region: "us-east-2"
     vpc_name: "ansible-demo"
     sg_name: "ansible-demo"
