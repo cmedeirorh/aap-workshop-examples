@@ -23,7 +23,7 @@
    
   - name: Update all installed packages using DNF module
     ansible.builtin.dnf:
-      name: '*'
+      name: 'kernel'
       state: latest
       update_cache: true
       update_only: true
