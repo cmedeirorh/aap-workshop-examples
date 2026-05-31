@@ -3,8 +3,8 @@
   hosts: all
   become: true
   vars:
-  packages_to_update: 
-    - 'kernel'
+    packages_to_update: 
+      - 'kernel'
 
   tasks:
   - name: Retrieve change request Number
