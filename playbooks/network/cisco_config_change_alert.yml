@@ -1,0 +1,37 @@
+---
+- name: Automated Incident Response - Cisco Switch Unauthorized Config Change
+  hosts: localhost
+  gather_facts: no
+  #connection: ansible.netcommon.network_cli
+  vars:
+    device: sw2.ansiblelab.net
+  
+  tasks:
+  - name: Gather recent logs from the Cisco switch
+    delegate_to: "{{ device }}"
+    cisco.ios.ios_command:
+      commands: "show logging | include %SYS-5-CONFIG_I" 
+    register: switch_logs
+
+  - name: Convert the last 20 log lines into a single text block
+    ansible.builtin.set_fact:
+      formatted_logs: "{{ switch_logs.stdout_lines[0][-20:] | join('\n') }}"
+      
+  - name: Create a ServiceNow Incident
+    servicenow.itsm.incident:
+      instance:
+          host: "{{ sn_instance }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"    
+      state: new
+      caller: "ansible"
+      urgency: high
+      impact: high
+      short_description: "Monitoring Alert - {{ ansible_eda.event.payload.alert_title }}"
+      description: "{{ formatted_logs }}"
+    register: new_ticket
+
+  - name: ServiceNow Ticket Number
+    ansible.builtin.debug:
+      var: new_ticket.record.number
+    when: new_ticket is defined
