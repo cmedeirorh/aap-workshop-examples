@@ -12,7 +12,7 @@
             
         - name: Get device name
           ansible.builtin.set_fact:
-            device_name: scope_dict.snmp_device
+            device_name: "{{ scope_dict.snmp_device }}"
 
 - name: Configuration for Cisco IOS Switch
   hosts: "{{ device_name | default('switches') }}"
