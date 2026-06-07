@@ -15,7 +15,7 @@
             device_name: "{{ scope_dict.snmp_device }}"
 
 - name: Configuration for Cisco IOS Switch
-  hosts: "{{ device_name | default('switches') }}"
+  hosts: "{{ device_name }}"
   gather_facts: false
   connection: network_cli
   vars:
