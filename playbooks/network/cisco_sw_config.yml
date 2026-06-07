@@ -1,10 +1,9 @@
 ---
 - name: Handle EDA Payload and Initial Tasks
-  hosts: all
+  hosts: localhost
   gather_facts: false
   tasks:
     - name: Run these tasks ONLY if triggered by Event-Driven Ansible
-      delegate_to: localhost
       when: scope is defined
       block:
         - name: Parse string to scope_dict
@@ -12,7 +11,6 @@
             scope_dict: "{{ dict(scope.split(',') | map('split', ':')) }}"
             
         - name: Get device name
-          delegate_to: localhost
           ansible.builtin.set_fact:
             device_name: scope_dict.snmp_device
 
