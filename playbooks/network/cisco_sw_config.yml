@@ -4,11 +4,11 @@
   gather_facts: false
   tasks:
     - name: Run these tasks ONLY if triggered by Event-Driven Ansible
-      when: ansible_eda is defined
+      when: scope is defined
       block:
         - name: Parse string to scope_dict
           ansible.builtin.set_fact:
-            scope_dict: "{{ dict(raw_scope_string.split(',') | map('split', ':')) }}"
+            scope_dict: "{{ dict(scope.split(',') | map('split', ':')) }}"
             
         - name: Get device name
           ansible.builtin.set_fact:
