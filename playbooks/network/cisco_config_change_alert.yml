@@ -2,13 +2,13 @@
 - name: Automated Incident Response - Cisco Switch Unauthorized Config Change
   hosts: localhost
   gather_facts: no
-  #connection: ansible.netcommon.network_cli
   vars:
     device: sw2.ansiblelab.net
   
   tasks:
   - name: Gather recent logs from the Cisco switch
     delegate_to: "{{ device }}"
+    connection: ansible.netcommon.network_cli
     cisco.ios.ios_command:
       commands: "show logging | include %SYS-5-CONFIG_I" 
     register: switch_logs
