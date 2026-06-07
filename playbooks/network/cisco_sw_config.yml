@@ -6,13 +6,14 @@
     - name: Parse string to scope_dict
       ansible.builtin.set_fact:
         scope_dict: "{{ dict(scope.split(',') | map('split', ':')) }}"
+      when: scope is defined
             
     - name: Get device name
       ansible.builtin.set_fact:
-        device_name: "{{ scope_dict.snmp_device }}"
+        device_name: "{{ scope_dict.snmp_device | default('switches') }}"
 
 - name: Configuration for Cisco IOS Switch
-  hosts: "{{ hostvars['localhost']['device_name']  | default('switches') }}"
+  hosts: "{{ hostvars['localhost']['device_name'] }}"
   gather_facts: false
   connection: network_cli
   vars:
