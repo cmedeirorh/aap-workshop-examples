@@ -17,7 +17,7 @@
   connection: network_cli
   vars:
     new_admin_user: "netadmin"
-    new_admin_pass: "SuperSecretPass123!"
+    new_admin_pass: ""
     domain_name: "example.com"
     snmp_community_string: "watch-ro"
     snmp_location: "lab1"
