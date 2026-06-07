@@ -35,7 +35,7 @@
           job_args:
             extra_vars: 
               tags: "{{ event.payload.alert_tags }}"
-              scope: "{{ event.payload.scope }}"
+              device_name: "{{ event.payload.scope[1] }}"
 
     - name: "Datadog - Log Alert: Config Mode"
       condition: (event.payload.alert_type == "error") and (event.payload.alert_tags is search ("config_mode"))
