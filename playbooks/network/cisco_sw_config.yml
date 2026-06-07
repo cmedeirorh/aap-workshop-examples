@@ -1,0 +1,86 @@
+---
+- name: Handle EDA Payload and Initial Tasks
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Run these tasks ONLY if triggered by Event-Driven Ansible
+      when: ansible_eda is defined
+      block:
+        - name: Parse string to scope_dict
+          ansible.builtin.set_fact:
+            scope_dict: "{{ dict(raw_scope_string.split(',') | map('split', ':')) }}"
+            
+        - name: Get device name
+          ansible.builtin.set_fact:
+            device_name: scope_dict.snmp_device
+
+- name: Configuration for Cisco IOS Switch
+  hosts: "{{ device_name | default('switches') }}"
+  gather_facts: false
+  connection: network_cli
+  vars:
+    new_admin_user: "netadmin"
+    new_admin_pass: "SuperSecretPass123!"
+    domain_name: "example.com"
+    snmp_community_string: "watch-ro"
+    snmp_location: "lab1"
+    snmp_contact: "admin@example.com"
+    motd: "Add your text here"
+    interfaces_to_enable:
+    - name: GigabitEthernet1
+      description: "Management"
+      enabled: true
+    - name: GigabitEthernet2
+      description: "Users"
+      enabled: true
+    - name: GigabitEthernet3
+      description: "Servers"
+      enabled: true
+    - name: GigabitEthernet4
+      description: "Guests"
+      enabled: true
+    
+  tasks: 
+    - name: Configure IOS Hostname
+      cisco.ios.ios_system:
+        hostname: "{{ inventory_hostname }}"
+        domain_name: "{{ domain_name }}"
+
+    - name: Configure Message of the Day (MOTD) banner
+      cisco.ios.ios_banner:
+        banner: motd
+        text: "{{ motd }}"
+        state: present        
+        
+    - name: Create local admin user with privilege level 15
+      cisco.ios.ios_user:
+        name: "{{ new_admin_user }}"
+        privilege: 15
+        configured_password: "{{ new_admin_pass }}"
+        password_type: secret
+        state: present
+
+    - name: Configure SNMPv2c Community, Location, and Contact
+      cisco.ios.ios_config:
+        lines:
+          - snmp-server community {{ snmp_community_string }} RO
+          - snmp-server location {{ snmp_location }}
+          - snmp-server contact {{ snmp_contact }}
+
+    - name: Enforce SSHv2 and secure VTY lines
+      cisco.ios.ios_config:
+        lines:
+          - transport input ssh
+          - login local
+        parents: line vty 0 15
+        before:
+          - ip ssh version 2
+        
+    - name: Ensure specific ports are enabled (no shutdown)
+      cisco.ios.ios_interfaces:
+        config: "{{ interfaces_to_enable }}"
+        state: merged
+        
+    - name: Save running-config to startup-config
+      cisco.ios.ios_config:
+        save_when: modified
