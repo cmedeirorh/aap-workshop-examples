@@ -35,7 +35,7 @@
 
     - name: Configure interface if interface_index is present
       ansible.builtin.debug:
-        msg: "Configuring interface {{ scope_dict }}"
+        msg: "Device {{ scope_dict.snmp_device }}"
       when: scope_dict is defined
   
     - name: Configure IOS Hostname
