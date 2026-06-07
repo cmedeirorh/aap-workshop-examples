@@ -1,23 +1,34 @@
 ---
-- name: Automated Incident Response - Cisco Switch Unauthorized Config Change
+- name: Handle EDA Payload and Initial Tasks
   hosts: localhost
-  gather_facts: no
-  vars:
-    device: sw2.ansiblelab.net
+  gather_facts: false
+  tasks:
+    - name: Parse string to scope_dict
+      ansible.builtin.set_fact:
+        scope_dict: "{{ dict(scope.split(',') | map('split', ':')) }}"
+      when: scope is defined
+            
+    - name: Get device name
+      ansible.builtin.set_fact:
+        device_name: "{{ scope_dict.snmp_device }}"
+
+- name: Automated Incident Response - Cisco Switch Unauthorized Config Change
+  hosts: "{{ hostvars['localhost']['device_name'] }}"
+  gather_facts: false
   
   tasks:
   - name: Gather recent logs from the Cisco switch
-    delegate_to: "{{ device }}"
-    connection: ansible.netcommon.network_cli
     cisco.ios.ios_command:
       commands: "show logging | include %SYS-5-CONFIG_I" 
     register: switch_logs
 
   - name: Convert the last 20 log lines into a single text block
+    delegate_to: localhost
     ansible.builtin.set_fact:
       formatted_logs: "{{ switch_logs.stdout_lines[0][-20:] | join('\n') }}"
       
   - name: Create a ServiceNow Incident
+    delegate_to: localhost
     servicenow.itsm.incident:
       instance:
           host: "{{ sn_instance }}"
@@ -32,6 +43,7 @@
     register: new_ticket
 
   - name: ServiceNow Ticket Number
+    delegate_to: localhost
     ansible.builtin.debug:
       var: new_ticket.record.number
     when: new_ticket is defined
