@@ -24,11 +24,13 @@
 
   - name: Convert the last 20 log lines into a single text block
     delegate_to: localhost
+    connection: local
     ansible.builtin.set_fact:
       formatted_logs: "{{ switch_logs.stdout_lines[0][-20:] | join('\n') }}"
       
   - name: Create a ServiceNow Incident
     delegate_to: localhost
+    connection: local
     servicenow.itsm.incident:
       instance:
           host: "{{ sn_instance }}"
@@ -44,6 +46,7 @@
 
   - name: ServiceNow Ticket Number
     delegate_to: localhost
+    connection: local
     ansible.builtin.debug:
       var: new_ticket.record.number
     when: new_ticket is defined
