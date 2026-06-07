@@ -38,7 +38,7 @@
               scope: "{{ event.payload.scope }}"
 
     - name: "Datadog - Log Alert: Config Mode"
-      condition: (event.payload.alert_type == "error") and (event.payload.alert_tags is search ("config_mode"))
+      condition: (event.payload.alert_type == "error") and (event.payload.alert_tags is search ("config_change"))
       action:
         run_job_template:
           name: "EDA - Report Incident to ServiceNow"
@@ -46,13 +46,4 @@
           job_args:
             extra_vars: 
               tags: "{{ event.payload.alert_tags }}"
-
-    - name: "Datadog - Log Alert: Config Saved"
-      condition: (event.payload.alert_type == "error") and (event.payload.alert_tags is search ("config_saved"))
-      action:
-        run_job_template:
-          name: "EDA - Report Incident to ServiceNow"
-          organization: Default
-          job_args:
-            extra_vars: 
-              tags: "{{ event.payload.alert_tags }}"
+              scope: "{{ event.payload.scope }}"
