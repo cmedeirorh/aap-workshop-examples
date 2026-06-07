@@ -15,7 +15,7 @@
 - name: Configuration for Cisco IOS Switch
   hosts: "{{ hostvars['localhost']['device_name'] }}"
   gather_facts: false
-  connection: network_cli
+  connection: ansible.netcommon.network_cli
   vars:
     new_admin_user: "netadmin"
     new_admin_pass: ""
