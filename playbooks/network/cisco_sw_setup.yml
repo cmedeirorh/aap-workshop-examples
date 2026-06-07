@@ -28,6 +28,16 @@
       enabled: true
     
   tasks:
+    - name: Get the device name
+      ansible.builtin.set_fact:
+        scope_dict: "{{ dict(scope.split(',') | map('split', ':')) }}"
+      when: scope is defined
+
+    - name: Configure interface if interface_index is present
+      ansible.builtin.debug:
+        msg: "Configuring interface {{ scope_dict }}"
+      when: scope_dict is defined
+  
     - name: Configure IOS Hostname
       cisco.ios.ios_system:
         hostname: "{{ inventory_hostname }}"
