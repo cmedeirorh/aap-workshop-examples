@@ -55,7 +55,7 @@
       ansible.builtin.copy:
         dest: "/var/www/html/report_{{ item }}.html"
         mode: '0644'
-        content: |
+content: |
           <!DOCTYPE html>
           <html lang="en">
           <head>
@@ -108,7 +108,7 @@
                       <div class="line">No pending CVEs found.</div>
                   {% else %}
                       {% for line in cves_output.split('\n') %}
-                          <div class="line">{{ line | regex_replace('(CVE-[0-9]{4}-[0-9]+)', '\\g<1>    <a href="https://www.cve.org/CVERecord?id=\\g<1>" target="_blank">[View \\g<1> Details]</a>') | regex_replace('(RHSA-[0-9]{4}:[0-9]+)', '\\g<1>    <a href="https://access.redhat.com/errata/\\g<1>" target="_blank">[View \\g<1> Details]</a>') }}</div>
+                          <div class="line">{{ line | regex_replace('(CVE-[0-9]{4}-[0-9]+)', '\\1    <a href="https://www.cve.org/CVERecord?id=\\1" target="_blank">[View \\1 Details]</a>') | regex_replace('(RHSA-[0-9]{4}:[0-9]+)', '\\1    <a href="https://access.redhat.com/errata/\\1" target="_blank">[View \\1 Details]</a>') }}</div>
                       {% endfor %}
                   {% endif %}
                   </div>
