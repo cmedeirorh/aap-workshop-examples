@@ -85,7 +85,7 @@
                   <pre>{{ hostvars[item]['host_updates'] | default('System is fully up to date or unable to parse.') }}</pre>
 
                   <h3>Pending CVEs</h3>
-                  <pre>{{ hostvars[item]['host_cves'] | default('No pending CVEs found.') }}</pre>
+                  <pre>{{ hostvars[item]['host_cves'] | default('No pending CVEs found.') | regex_replace('(CVE-[0-9]{4}-[0-9]+)', '<a href="https://www.cve.org/CVERecord?id=\1" target="_blank">\1</a>') }}</pre>
               </div>
               <div class="footer">Automated Compliance Report Generated via Ansible</div>
           </body>
