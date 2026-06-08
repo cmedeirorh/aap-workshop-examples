@@ -85,7 +85,7 @@
                   <pre>{{ hostvars[item]['host_updates'] | default('System is fully up to date or unable to parse.') }}</pre>
 
                   <h3>Pending CVEs</h3>
-                  <pre>{{ hostvars[item]['host_cves'] | default('No pending CVEs found.') | regex_replace('(?m)^(.*(CVE-[0-9]{4}-[0-9]+).*)$', '\\1    <a href="https://www.cve.org/CVERecord?id=\\2" target="_blank">[View \\2 Details]</a>') }}</pre>
+                  <pre>{{ hostvars[item]['host_cves'] | default('No pending CVEs found.') | regex_replace('(CVE-[0-9]{4}-[0-9]+)', '\\g<1>    <a href="https://www.cve.org/CVERecord?id=\\g<1>" target="_blank">[View \\g<1> Details]</a>') | regex_replace('(RHSA-[0-9]{4}:[0-9]+)', '\\g<1>    <a href="https://access.redhat.com/errata/\\g<1>" target="_blank">[View \\g<1> Details]</a>') }}</pre>
               </div>
               <div class="footer">Automated Compliance Report Generated via Ansible</div>
           </body>
