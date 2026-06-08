@@ -72,8 +72,8 @@
                   /* Terminal and Zebra Striping CSS */
                   .terminal { background: #272822; color: #f8f8f2; border-radius: 5px; overflow-x: auto; font-family: Consolas, Monaco, monospace; font-size: 14px; padding: 10px 0; }
                   .terminal .line { padding: 4px 15px; white-space: pre; }
-                  .terminal .line:nth-child(even) { background-color: #31322c; } /* Zebra stripe color */
-                  .terminal .line:hover { background-color: #49483e; } /* Row highlight on mouse hover */
+                  .terminal .line:nth-child(even) { background-color: #31322c; } 
+                  .terminal .line:hover { background-color: #49483e; } 
                   .terminal a { color: #66d9ef; text-decoration: none; font-weight: bold; }
                   .terminal a:hover { color: #a6e22e; text-decoration: underline; }
 
@@ -108,7 +108,19 @@
                       <div class="line">No pending CVEs found.</div>
                   {% else %}
                       {% for line in cves_output.split('\n') %}
-                          <div class="line">{{ line | regex_replace('(CVE-[0-9]{4}-[0-9]+)', '\\1    <a href="https://www.cve.org/CVERecord?id=\\1" target="_blank">[View \\1 Details]</a>') | regex_replace('(RHSA-[0-9]{4}:[0-9]+)', '\\1    <a href="https://access.redhat.com/errata/\\1" target="_blank">[View \\1 Details]</a>') }}</div>
+                          {# Extract the first word of the line, if it exists #}
+                          {% set adv = line.split()[0] if line.split() else '' %}
+                          
+                          {# Check if the word is an RHSA or CVE, and inline the link safely #}
+                          {% if adv.startswith('RHSA-') %}
+                              {% set link = '<a href="https://access.redhat.com/errata/' ~ adv ~ '" target="_blank">' ~ adv ~ '</a>' %}
+                              <div class="line">{{ line | replace(adv, link, 1) }}</div>
+                          {% elif adv.startswith('CVE-') %}
+                              {% set link = '<a href="https://www.cve.org/CVERecord?id=' ~ adv ~ '" target="_blank">' ~ adv ~ '</a>' %}
+                              <div class="line">{{ line | replace(adv, link, 1) }}</div>
+                          {% else %}
+                              <div class="line">{{ line }}</div>
+                          {% endif %}
                       {% endfor %}
                   {% endif %}
                   </div>
