@@ -20,7 +20,6 @@
   - name: Gather recent logs from the Cisco switch
     cisco.ios.ios_command:
       commands: 
-        - "show logging | include %SYS-5-CONFIG"
         - "show archive log config all"
     register: switch_logs
 
