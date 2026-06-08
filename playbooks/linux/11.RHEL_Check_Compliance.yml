@@ -51,9 +51,9 @@
         state: directory
         mode: '0755'
 
-    - name: Create the HTML report and push to Webserver
+- name: Create individual HTML reports for each target node
       ansible.builtin.copy:
-        dest: /var/www/html/patch_report.html
+        dest: "/var/www/html/report_{{ item }}.html"
         mode: '0644'
         content: |
           <!DOCTYPE html>
@@ -61,7 +61,7 @@
           <head>
               <meta charset="UTF-8">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>System Patch & CVE Report</title>
+              <title>Report: {{ item }}</title>
               <style>
                   body { font-family: "Segoe UI", Arial, sans-serif; margin: 40px; background-color: #f4f4f9; color: #333; }
                   h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
@@ -69,24 +69,62 @@
                   h3 { color: #34495e; }
                   .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
                   pre { background: #272822; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 14px; }
+                  .nav { margin-bottom: 20px; }
+                  .nav a { text-decoration: none; color: #fff; background: #3498db; padding: 10px 15px; border-radius: 5px; font-weight: bold; }
+                  .nav a:hover { background: #2980b9; }
                   .footer { margin-top: 30px; font-size: 12px; color: #7f8c8d; text-align: center; }
               </style>
           </head>
           <body>
               <div class="container">
-                  <h1>Linux System Update & CVE Report</h1>
+                  <div class="nav"><a href="index.html">&larr; Back to Dashboard</a></div>
+                  <h1>Patch & CVE Report: {{ item }}</h1>
                   <p><strong>Report Generated:</strong> {{ ansible_date_time.date }} {{ ansible_date_time.time }}</p>
 
-                  {% for host in groups['target_servers'] %}
-                  <h2>Target Server: {{ host }}</h2>
-                  
                   <h3>Available Packages</h3>
-                  <pre>{{ hostvars[host]['host_updates'] | default('System is fully up to date or unable to parse.') }}</pre>
+                  <pre>{{ hostvars[item]['host_updates'] | default('System is fully up to date or unable to parse.') }}</pre>
 
                   <h3>Pending CVEs</h3>
-                  <pre>{{ hostvars[host]['host_cves'] | default('No pending CVEs found.') }}</pre>
-                  <hr>
+                  <pre>{{ hostvars[item]['host_cves'] | default('No pending CVEs found.') }}</pre>
+              </div>
+              <div class="footer">Automated Compliance Report Generated via Ansible</div>
+          </body>
+          </html>
+      loop: "{{ groups['target_servers'] }}"
+
+    - name: Create the landing page (index.html) with links to all reports
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        mode: '0644'
+        content: |
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Patch Management Dashboard</title>
+              <style>
+                  body { font-family: "Segoe UI", Arial, sans-serif; margin: 40px; background-color: #f4f4f9; color: #333; }
+                  h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+                  .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
+                  ul { list-style-type: none; padding: 0; }
+                  li { margin: 15px 0; }
+                  a { text-decoration: none; color: #2c3e50; font-size: 18px; display: block; padding: 15px; background: #e8f4f8; border-radius: 5px; transition: 0.3s; border-left: 5px solid #3498db; }
+                  a:hover { background: #d4eaf5; padding-left: 20px; }
+                  .footer { margin-top: 30px; font-size: 12px; color: #7f8c8d; text-align: center; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>Patch Management Dashboard</h1>
+                  <p><strong>Last Updated:</strong> {{ ansible_date_time.date }} {{ ansible_date_time.time }}</p>
+                  <p>Select a node below to view its pending packages and CVE vulnerabilities:</p>
+                  
+                  <ul>
+                  {% for host in groups['target_servers'] %}
+                      <li><a href="report_{{ host }}.html">View Report: {{ host }}</a></li>
                   {% endfor %}
+                  </ul>
               </div>
               <div class="footer">Automated Compliance Report Generated via Ansible</div>
           </body>
