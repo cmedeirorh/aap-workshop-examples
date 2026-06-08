@@ -1,6 +1,6 @@
 ---
 - name: Phase 1 - Collect Update and CVE Data from Targets
-  hosts: all
+  hosts: target_servers
   become: true
   
   tasks:
