@@ -1,0 +1,93 @@
+---
+- name: Phase 1 - Collect Update and CVE Data from Targets
+  hosts: all
+  become: true
+  
+  tasks:
+    - name: Check for available package updates
+      ansible.builtin.command: dnf check-update
+      register: dnf_updates
+      # dnf check-update returns 100 if updates are available, 0 if not.
+      failed_when: dnf_updates.rc not in [0, 100]
+      changed_when: false
+
+    - name: Check for pending CVEs (Security Advisories)
+      ansible.builtin.command: dnf updateinfo list cves
+      register: dnf_cves
+      changed_when: false
+      
+    - name: Store update results as facts
+      ansible.builtin.set_fact:
+        host_updates: "{{ dnf_updates.stdout }}"
+        host_cves: "{{ dnf_cves.stdout }}"
+
+- name: Phase 2 - Generate and Publish HTML Report
+  hosts: report
+  become: true
+  
+  tasks:
+    - name: Ensure Apache (httpd) is installed
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+
+    - name: Ensure Apache is enabled and running
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Ensure firewalld allows HTTP traffic
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: true
+      ignore_errors: true  
+
+    - name: Ensure web server root directory exists
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        mode: '0755'
+
+    - name: Create the HTML report and push to Webserver
+      ansible.builtin.copy:
+        dest: /var/www/html/patch_report.html
+        mode: '0644'
+        content: |
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>System Patch & CVE Report</title>
+              <style>
+                  body { font-family: "Segoe UI", Arial, sans-serif; margin: 40px; background-color: #f4f4f9; color: #333; }
+                  h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+                  h2 { color: #2980b9; margin-top: 30px; background: #e8f4f8; padding: 10px; border-radius: 5px; }
+                  h3 { color: #34495e; }
+                  .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                  pre { background: #272822; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 14px; }
+                  .footer { margin-top: 30px; font-size: 12px; color: #7f8c8d; text-align: center; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>Linux System Update & CVE Report</h1>
+                  <p><strong>Report Generated:</strong> {{ ansible_date_time.date }} {{ ansible_date_time.time }}</p>
+
+                  {% for host in groups['target_servers'] %}
+                  <h2>Target Server: {{ host }}</h2>
+                  
+                  <h3>Available Packages</h3>
+                  <pre>{{ hostvars[host]['host_updates'] | default('System is fully up to date or unable to parse.') }}</pre>
+
+                  <h3>Pending CVEs</h3>
+                  <pre>{{ hostvars[host]['host_cves'] | default('No pending CVEs found.') }}</pre>
+                  <hr>
+                  {% endfor %}
+              </div>
+              <div class="footer">Automated Compliance Report Generated via Ansible</div>
+          </body>
+          </html>
