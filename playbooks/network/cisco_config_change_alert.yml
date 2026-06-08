@@ -19,7 +19,9 @@
   tasks:
   - name: Gather recent logs from the Cisco switch
     cisco.ios.ios_command:
-      commands: "show logging | include %SYS-5-CONFIG_I" 
+      commands: 
+        - "show logging | include %SYS-5-CONFIG"
+        - "show archive log config all"
     register: switch_logs
 
   - name: Convert the last 20 log lines into a single text block
