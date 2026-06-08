@@ -55,7 +55,7 @@
       ansible.builtin.copy:
         dest: "/var/www/html/report_{{ item }}.html"
         mode: '0644'
-content: |
+        content: |
           <!DOCTYPE html>
           <html lang="en">
           <head>
