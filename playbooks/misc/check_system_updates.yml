@@ -1,0 +1,264 @@
+---
+- name: Phase 1 - Collect Update Data from Linux and Windows Targets
+  hosts: target_servers
+  gather_facts: true
+  tasks:
+    # ==========================================
+    # LINUX (RedHat) TASKS
+    # ==========================================
+    - name: Check for available package updates (RHEL)
+      ansible.builtin.command: dnf check-update
+      become: true
+      register: dnf_updates
+      failed_when: dnf_updates.rc not in [0, 100]
+      changed_when: false
+      when: ansible_os_family == "RedHat"
+
+    - name: Check for pending CVEs (RHEL)
+      ansible.builtin.command: dnf updateinfo list cves
+      become: true
+      register: dnf_cves
+      changed_when: false
+      when: ansible_os_family == "RedHat"
+      
+    - name: Store update results as facts (RHEL)
+      ansible.builtin.set_fact:
+        host_updates: "{{ dnf_updates.stdout }}"
+        host_cves: "{{ dnf_cves.stdout }}"
+        # Pre-calculate counts here so the dashboard HTML is clean
+        host_update_count: "{{ dnf_updates.stdout | regex_findall('(?m)^[^\\s]+\\.(?:x86_64|noarch|i[3456]86|aarch64|s390x|ppc64le)\\s+') | length }}"
+        host_cve_count: "{{ dnf_cves.stdout | regex_findall('(?m)^(?:CVE-\\d{4}-\\d+|RHSA-\\d{4}:\\d+)') | length }}"
+      when: ansible_os_family == "RedHat"
+
+    # ==========================================
+    # WINDOWS TASKS
+    # ==========================================
+    - name: Search for pending updates (Windows)
+      ansible.windows.win_updates:
+        state: searched
+      register: win_updates
+      when: ansible_os_family == "Windows"
+
+    - name: Format and store Windows Update data
+      ansible.builtin.set_fact:
+        # Loop through the Windows update dictionary and format as "KBXXXXXXX    Update Title"
+        host_updates: >-
+          {% set u_lines = [] %}
+          {% for uid, u in (win_updates.updates | default({})).items() %}
+            {% set kb_str = 'KB' ~ u.kb[0] if (u.kb is defined and u.kb) else 'NoKB' %}
+            {% set _ = u_lines.append(kb_str ~ '    ' ~ u.title) %}
+          {% endfor %}
+          {{ u_lines | join('\n') }}
+        # Filter for only Security/Critical updates for the vulnerability section
+        host_cves: >-
+          {% set c_lines = [] %}
+          {% for uid, u in (win_updates.updates | default({})).items() %}
+            {% if 'Security Updates' in u.categories | default([]) or 'Critical Updates' in u.categories | default([]) %}
+              {% set kb_str = 'KB' ~ u.kb[0] if (u.kb is defined and u.kb) else 'NoKB' %}
+              {% set _ = c_lines.append(kb_str ~ '    ' ~ u.title) %}
+            {% endif %}
+          {% endfor %}
+          {{ c_lines | join('\n') }}
+        host_update_count: "{{ (win_updates.updates | default({})) | length }}"
+      when: ansible_os_family == "Windows"
+
+    - name: Count Windows Security Advisories
+      ansible.builtin.set_fact:
+        host_cve_count: "{{ host_cves.split('\n') | reject('equalto', '') | list | length }}"
+      when: ansible_os_family == "Windows"
+
+- name: Phase 2 - Configure RHEL Webserver and Publish Reports
+  hosts: web_server
+  become: true
+  tasks:
+    - name: Ensure Apache (httpd) is installed
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+
+    - name: Ensure Apache is enabled and running
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Ensure firewalld allows HTTP traffic
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: true
+      ignore_errors: true 
+
+    - name: Ensure web server root directory exists
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        mode: '0755'
+
+    - name: Create individual HTML reports for each target node
+      ansible.builtin.copy:
+        dest: "/var/www/html/report_{{ item }}.html"
+        mode: '0644'
+        content: |
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Report: {{ item }}</title>
+              <style>
+                  body { font-family: "Segoe UI", Arial, sans-serif; margin: 40px; background-color: #f4f4f9; color: #333; }
+                  h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+                  h2 { color: #2980b9; margin-top: 30px; background: #e8f4f8; padding: 10px; border-radius: 5px; }
+                  h3 { color: #34495e; margin-top: 30px; }
+                  .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                  
+                  /* Terminal and Zebra Striping CSS */
+                  .terminal { background: #272822; color: #f8f8f2; border-radius: 5px; overflow-x: auto; font-family: Consolas, Monaco, monospace; font-size: 14px; padding: 10px 0; }
+                  .terminal .line { padding: 4px 15px; white-space: pre; }
+                  .terminal .line:nth-child(even) { background-color: #31322c; } 
+                  .terminal .line:hover { background-color: #49483e; } 
+                  .terminal a { color: #66d9ef; text-decoration: none; font-weight: bold; }
+                  .terminal a:hover { color: #a6e22e; text-decoration: underline; }
+
+                  .nav { margin-bottom: 20px; }
+                  .nav a { text-decoration: none; color: #fff; background: #3498db; padding: 10px 15px; border-radius: 5px; font-weight: bold; }
+                  .nav a:hover { background: #2980b9; }
+                  .footer { margin-top: 30px; font-size: 12px; color: #7f8c8d; text-align: center; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="nav"><a href="index.html">&larr; Back to Dashboard</a></div>
+                  <h1>Patch & Vulnerability Report: {{ item }}</h1>
+                  <p><strong>OS Family:</strong> {{ hostvars[item]['ansible_os_family'] | default('Unknown') }}</p>
+                  <p><strong>Report Generated:</strong> {{ ansible_date_time.date }} {{ ansible_date_time.time }}</p>
+
+                  <h3>Available Packages</h3>
+                  <div class="terminal">
+                  {% set updates_output = hostvars[item]['host_updates'] | default('') %}
+                  {% if updates_output | trim == '' %}
+                      <div class="line">System is fully up to date or unable to parse.</div>
+                  {% else %}
+                      {% for line in updates_output.split('\n') %}
+                          <div class="line">{{ line }}</div>
+                      {% endfor %}
+                  {% endif %}
+                  </div>
+
+                  <h3>Pending Security Advisories & CVEs</h3>
+                  <div class="terminal">
+                  {% set cves_output = hostvars[item]['host_cves'] | default('') %}
+                  {% if cves_output | trim == '' %}
+                      <div class="line">No pending Security updates found.</div>
+                  {% else %}
+                      {% for line in cves_output.split('\n') %}
+                          {% set adv = line.split()[0] if line.split() else '' %}
+                          
+                          {% if adv.startswith('RHSA-') %}
+                              {% set link = '<a href="https://access.redhat.com/errata/' ~ adv ~ '" target="_blank">' ~ adv ~ '</a>' %}
+                              <div class="line">{{ line | replace(adv, link, 1) }}</div>
+                          {% elif adv.startswith('CVE-') %}
+                              {% set link = '<a href="https://www.cve.org/CVERecord?id=' ~ adv ~ '" target="_blank">' ~ adv ~ '</a>' %}
+                              <div class="line">{{ line | replace(adv, link, 1) }}</div>
+                          {% elif adv.startswith('KB') %}
+                              {% set kb_num = adv | replace('KB', '') %}
+                              {% set link = '<a href="https://support.microsoft.com/help/' ~ kb_num ~ '" target="_blank">' ~ adv ~ '</a>' %}
+                              <div class="line">{{ line | replace(adv, link, 1) }}</div>
+                          {% else %}
+                              <div class="line">{{ line }}</div>
+                          {% endif %}
+                      {% endfor %}
+                  {% endif %}
+                  </div>
+              </div>
+              <div class="footer">Automated Compliance Report Generated via Ansible</div>
+          </body>
+          </html>
+      loop: "{{ groups['target_servers'] }}"
+
+    - name: Create the landing page (index.html) with links to all reports
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        mode: '0644'
+        content: |
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Patch Management Dashboard</title>
+              <style>
+                  body { font-family: "Segoe UI", Arial, sans-serif; margin: 40px; background-color: #f4f4f9; color: #333; }
+                  h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+                  .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 1000px; margin: auto; }
+                  
+                  /* Dashboard Table CSS */
+                  table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 16px; }
+                  th, td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+                  th { background-color: #f8f9fa; color: #2c3e50; font-weight: 600; }
+                  tr:hover { background-color: #f1f7fa; }
+                  
+                  /* OS Logos/Badges */
+                  .os { font-size: 12px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; }
+                  
+                  /* Status Badges */
+                  .badge { padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; color: #fff; display: inline-block; text-align: center; min-width: 110px; }
+                  .badge-compliant { background-color: #2ecc71; }
+                  .badge-warning { background-color: #f39c12; }
+                  .badge-danger { background-color: #e74c3c; }
+                  
+                  /* Buttons */
+                  .btn { text-decoration: none; color: #fff; background: #3498db; padding: 8px 15px; border-radius: 4px; font-size: 14px; font-weight: bold; transition: 0.3s; display: inline-block; }
+                  .btn:hover { background: #2980b9; }
+                  
+                  .footer { margin-top: 30px; font-size: 12px; color: #7f8c8d; text-align: center; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>Patch Management Dashboard</h1>
+                  <p><strong>Last Updated:</strong> {{ ansible_date_time.date }} {{ ansible_date_time.time }}</p>
+                  
+                  <table>
+                      <thead>
+                          <tr>
+                              <th>Node Hostname</th>
+                              <th>OS</th>
+                              <th>Compliance Status</th>
+                              <th>Pending Packages</th>
+                              <th>Security Advisories</th>
+                              <th>Action</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                      {% for host in groups['target_servers'] %}
+                          {# Pull counts generated cleanly in Phase 1 #}
+                          {% set cve_count = hostvars[host]['host_cve_count'] | default(0) | int %}
+                          {% set update_count = hostvars[host]['host_update_count'] | default(0) | int %}
+                          {% set os_family = hostvars[host]['ansible_os_family'] | default('Unknown') %}
+                          
+                          <tr>
+                              <td><strong>{{ host }}</strong></td>
+                              <td><span class="os">{{ os_family }}</span></td>
+                              <td>
+                                  {% if cve_count > 0 %}
+                                      <span class="badge badge-danger">Non-Compliant</span>
+                                  {% elif update_count > 0 %}
+                                      <span class="badge badge-warning">Updates Pending</span>
+                                  {% else %}
+                                      <span class="badge badge-compliant">Compliant</span>
+                                  {% endif %}
+                              </td>
+                              <td>{{ update_count }}</td>
+                              <td>{{ cve_count }}</td>
+                              <td><a href="report_{{ host }}.html" class="btn">View Details</a></td>
+                          </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+              <div class="footer">Automated Compliance Report Generated via Ansible</div>
+          </body>
+          </html>
