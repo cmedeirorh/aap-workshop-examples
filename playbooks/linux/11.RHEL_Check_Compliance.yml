@@ -144,11 +144,24 @@
               <style>
                   body { font-family: "Segoe UI", Arial, sans-serif; margin: 40px; background-color: #f4f4f9; color: #333; }
                   h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-                  .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
-                  ul { list-style-type: none; padding: 0; }
-                  li { margin: 15px 0; }
-                  a { text-decoration: none; color: #2c3e50; font-size: 18px; display: block; padding: 15px; background: #e8f4f8; border-radius: 5px; transition: 0.3s; border-left: 5px solid #3498db; }
-                  a:hover { background: #d4eaf5; padding-left: 20px; }
+                  .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 1000px; margin: auto; }
+                  
+                  /* Dashboard Table CSS */
+                  table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 16px; }
+                  th, td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+                  th { background-color: #f8f9fa; color: #2c3e50; font-weight: 600; }
+                  tr:hover { background-color: #f1f7fa; }
+                  
+                  /* Status Badges */
+                  .badge { padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; color: #fff; display: inline-block; text-align: center; min-width: 110px; }
+                  .badge-compliant { background-color: #2ecc71; }
+                  .badge-warning { background-color: #f39c12; }
+                  .badge-danger { background-color: #e74c3c; }
+                  
+                  /* Buttons */
+                  .btn { text-decoration: none; color: #fff; background: #3498db; padding: 8px 15px; border-radius: 4px; font-size: 14px; font-weight: bold; transition: 0.3s; display: inline-block; }
+                  .btn:hover { background: #2980b9; }
+                  
                   .footer { margin-top: 30px; font-size: 12px; color: #7f8c8d; text-align: center; }
               </style>
           </head>
@@ -156,13 +169,44 @@
               <div class="container">
                   <h1>Patch Management Dashboard</h1>
                   <p><strong>Last Updated:</strong> {{ ansible_date_time.date }} {{ ansible_date_time.time }}</p>
-                  <p>Select a node below to view its pending packages and CVE vulnerabilities:</p>
                   
-                  <ul>
-                  {% for host in groups['target_servers'] %}
-                      <li><a href="report_{{ host }}.html">View Report: {{ host }}</a></li>
-                  {% endfor %}
-                  </ul>
+                  <table>
+                      <thead>
+                          <tr>
+                              <th>Node Hostname</th>
+                              <th>Compliance Status</th>
+                              <th>Pending Packages</th>
+                              <th>Pending CVEs/Advisories</th>
+                              <th>Action</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                      {% for host in groups['target_servers'] %}
+                          {# Extract variables and cleanly count matches using Regex #}
+                          {% set cves = hostvars[host]['host_cves'] | default('') %}
+                          {% set updates = hostvars[host]['host_updates'] | default('') %}
+                          
+                          {% set cve_count = (cves | regex_findall('(?m)^(?:CVE-\\d{4}-\\d+|RHSA-\\d{4}:\\d+)') | length) %}
+                          {% set update_count = (updates | regex_findall('(?m)^[^\\s]+\\.(?:x86_64|noarch|i[3456]86|aarch64|s390x|ppc64le)\\s+') | length) %}
+                          
+                          <tr>
+                              <td><strong>{{ host }}</strong></td>
+                              <td>
+                                  {% if cve_count > 0 %}
+                                      <span class="badge badge-danger">Non-Compliant</span>
+                                  {% elif update_count > 0 %}
+                                      <span class="badge badge-warning">Updates Pending</span>
+                                  {% else %}
+                                      <span class="badge badge-compliant">Compliant</span>
+                                  {% endif %}
+                              </td>
+                              <td>{{ update_count }}</td>
+                              <td>{{ cve_count }}</td>
+                              <td><a href="report_{{ host }}.html" class="btn">View Details</a></td>
+                          </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
               </div>
               <div class="footer">Automated Compliance Report Generated via Ansible</div>
           </body>
