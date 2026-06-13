@@ -6,7 +6,7 @@
 
   rules:
     - name: ServiceNow Change Request set to Scheduled
-      condition: event.payload.event_type == "change_request_scheduled"
+      condition: (event.payload.event_type == "change_request_scheduled") and (event.payload.change_ticket is search ("Pending OS Updates"))  
       action:
         run_job_template:
           name: "EDA - Linux Deploy APP With Podman"
