@@ -12,6 +12,7 @@
           name: "EDA - Linux Deploy APP With Podman"
           organization: Default
           job_args:
+            limit: "{{ event.payload.change_ticket.title.split(':')[1] | replace(' ', '') }}"
             extra_vars:
               data: "{{ event.payload.change_ticket.title.split(':')[1] | replace(' ', '') }}"
 
