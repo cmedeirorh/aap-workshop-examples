@@ -13,7 +13,7 @@
           organization: Default
           job_args:
             extra_vars:
-              data: "{{ event.payload.change_ticket.title.split(':')[1] }}"
+              data: "{{ event.payload.change_ticket.title.split(':')[1] | replace(' ', '') }}"
 
     - name: Print Payload
       condition: event.payload is defined
