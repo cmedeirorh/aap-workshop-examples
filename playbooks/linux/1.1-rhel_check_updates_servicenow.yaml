@@ -37,6 +37,7 @@
           password: "{{ sn_password }}"
       state: new
       category: system_software
+      assignment_group: "Change Management"
       type: standard
       requested_by: "admin"
       priority: critical
