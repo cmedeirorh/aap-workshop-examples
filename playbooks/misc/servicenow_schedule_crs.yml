@@ -3,13 +3,14 @@
   hosts: localhost
   gather_facts: false
   vars:
-    encoded_query: "state=-5"
     target_assignment_group: "Change Manager"
 
   tasks:
     - name: Retrieve 'New' change requests
       servicenow.itsm.change_request_info:
-        query: "{{ encoded_query }}"
+        query:
+        - state: = new
+          sys_created_by: = ansible
       register: cr_results
 
     - name: Mark change requests as 'Scheduled'
