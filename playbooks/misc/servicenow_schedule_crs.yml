@@ -1,0 +1,22 @@
+---
+- name: Update ServiceNow Change Requests to Scheduled
+  hosts: localhost
+  gather_facts: false
+  vars:
+    encoded_query: "state=-5"
+    target_assignment_group: "Change Manager"
+
+  tasks:
+    - name: Retrieve 'New' change requests
+      servicenow.itsm.change_request_info:
+        query: "{{ encoded_query }}"
+      register: cr_results
+
+    - name: Mark change requests as 'Scheduled'
+      servicenow.itsm.change_request:
+        sys_id: "{{ item.sys_id }}"
+        state: "scheduled"
+        assignment_group: "{{ target_assignment_group }}"
+      loop: "{{ cr_results.records | default([]) }}"
+      loop_control:
+        label: "{{ item.number | default(item.sys_id) }}"
