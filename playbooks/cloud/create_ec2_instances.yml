@@ -1,5 +1,5 @@
 ---
-- name: Deploy an EC2 VM using Subnet and Security Group Names
+- name: Deploy an EC2 VM 
   hosts: localhost
   gather_facts: false
   
@@ -57,11 +57,4 @@
       loop: 
         - node1
         - node2
-      register: ec2_results
-
-    - name: Display newly provisioned instance details
-      ansible.builtin.debug:
-        msg: 
-          - "Instance ID: {{ ec2_result.instances[0].instance_id }}"
-          - "Private IP: {{ ec2_result.instances[0].private_ip_address }}"
-          - "Public IP: {{ ec2_result.instances[0].public_ip_address | default('None assigned') }}"
+      register: ec2_result
