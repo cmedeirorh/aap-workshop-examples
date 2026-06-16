@@ -9,7 +9,7 @@
     subnet_name: "aws-test-subnet"
     security_group_name: "aws-test-sg"
     ssh_key_name: "aws-test-key"
-    ami_id: "ami-04f6cf744b72b140b"
+    ami_id: "ami-0ff44cc29626b706c"
     instance_type: "t3.small"
 
   tasks:
