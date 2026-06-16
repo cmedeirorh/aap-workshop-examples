@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: false
   vars:
-    target_assignment_group: "Change Manager"
+    target_assignment_group: "Change Management"
 
   tasks:
     - name: Retrieve 'New' change requests
