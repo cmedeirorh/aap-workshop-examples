@@ -15,13 +15,13 @@
           password: "{{ sn_password }}"
       query:
         - short_description: "LIKE {{ inventory_hostname }}"
-          state: = new
+          state: = scheduled
           sys_created_by: = ansible      
     register: changerequest_info 
 
   - name: Ensure a ticket was found
     ansible.builtin.fail:
-      msg: "No Change Request was found, run previous playbook to create it."
+      msg: "No Change Request set as SCHEDULED was found."
     when: changerequest_info.records[0].number is undefined or changerequest_info.records[0].number == None or changerequest_info.records[0].number | length == 0
    
   - name: Update all installed packages using DNF module
@@ -49,7 +49,6 @@
       assignment_group: "Software"
       number: "{{ changerequest_info.records[0].number }}"
     loop:
-      - scheduled
       - implement
       - review
     when: dnf_updates is changed
