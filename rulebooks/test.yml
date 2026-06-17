@@ -15,4 +15,4 @@
           organization: Default
           job_args:
             extra_vars: 
-              data: "{{ event.payload.change_ticket.title.split(':')[1] | replace(' ', '') }}"
+              data: "{{ event.payload.change_ticket.title }}"
