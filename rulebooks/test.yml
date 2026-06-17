@@ -1,5 +1,5 @@
 ---
-- name: Respond to Test Events
+- name: Respond to Events
   hosts: all
   sources:
     - ansible.eda.webhook:
@@ -7,12 +7,13 @@
         port: 35001
 
   rules:
-    - name: Test Alerts
+    - name: ServiceNow Events
       condition: event.payload.event_type == "change_request_scheduled"
       action:
         run_job_template:
           name: "RHEL ServiceNow - Check for Updates"
           organization: Default
           job_args:
+            limit: "{{ event.payload.change_ticket.title.split(':')[1] | replace(' ', '') }}"
             extra_vars: 
               data: "{{ event.payload }}"
