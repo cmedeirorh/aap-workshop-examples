@@ -6,7 +6,7 @@
 
   rules:
     - name: ServiceNow Change Request set to Scheduled
-      condition: (event.payload.event_type == "change_request_scheduled") and (event.payload.change_ticket is search ("Pending OS Updates"))  
+      condition: event.payload.event_type == "change_request_scheduled"
       action:
         run_job_template:
           name: "RHEL ServiceNow - Apply Updates"
