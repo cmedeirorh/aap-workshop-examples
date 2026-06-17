@@ -1,0 +1,18 @@
+---
+- name: Respond to Test Events
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 35001
+
+  rules:
+    - name: Test Alerts
+      condition: event.payload is defined
+      action:
+        run_job_template:
+          name: "RHEL ServiceNow - Check for Updates"
+          organization: Default
+          job_args:
+            extra_vars: 
+              data: "{{ event.payload.hostname }}"
