@@ -43,7 +43,7 @@
       priority: critical
       risk: low
       impact: medium
-      short_description: 'Pending OS Updates on "{{ inventory_hostname }}".'
+      short_description: "Pending OS Updates on: {{ inventory_hostname }}"
       description: |
         Server {{ inventory_hostname }} has {{ dnf_updates.results | length }} pending package updates.
         
