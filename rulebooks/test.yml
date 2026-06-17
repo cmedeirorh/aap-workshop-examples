@@ -8,7 +8,7 @@
 
   rules:
     - name: Test Alerts
-      condition: event.payload is defined
+      condition: event.payload.event_type == "change_request_scheduled"
       action:
         run_job_template:
           name: "RHEL ServiceNow - Check for Updates"
