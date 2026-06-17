@@ -15,4 +15,4 @@
           organization: Default
           job_args:
             extra_vars: 
-              data: "{{ event.payload.hostname }}"
+              data: "{{ event.payload }}"
