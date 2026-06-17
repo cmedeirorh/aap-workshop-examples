@@ -5,31 +5,14 @@
     - ansible.eda.webhook:
         host: 0.0.0.0
         port: 35001
-
+        
   rules:
-    - name: ServiceNow Change Request set to Scheduled
-      condition: event.payload.event_type == "change_request_scheduled"
-      action:
-        run_job_template:
-          name: "RHEL ServiceNow - Apply Updates"
-          organization: Default
-          job_args:
-            limit: "{{ event.payload.change_ticket.title.split(':')[1] | replace(' ', '') }}"
-            extra_vars:
-              data: "{{ event.payload.change_ticket.title.split(':')[1] | replace(' ', '') }}"
-
-    - name: Debug Payload
-      condition: event.payload is defined
-      action:
-        run_job_template:
-          name: "RHEL ServiceNow - Check for Updates"
-          organization: Default
-          job_args:
-            extra_vars:
-              data: "{{ event.payload) }}"
-              
-    - name: Print Payload
-      condition: event.payload is defined
-      action:
-        debug:
-          var: event.payload
+  - name: ServiceNow Change Request set to Scheduled
+    condition: event.payload.event_type == "change_request_scheduled"
+    action:
+      run_job_template:
+        name: "RHEL ServiceNow - Check for Updates"
+        organization: Default
+        job_args:
+          extra_vars: 
+            data: "{{ event.payload }}"
