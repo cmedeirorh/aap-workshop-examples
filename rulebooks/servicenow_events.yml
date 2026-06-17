@@ -9,7 +9,7 @@
       condition: (event.payload.event_type == "change_request_scheduled") and (event.payload.change_ticket is search ("Pending OS Updates"))  
       action:
         run_job_template:
-          name: "EDA - Linux Deploy APP With Podman"
+          name: "RHEL ServiceNow - Apply Updates"
           organization: Default
           job_args:
             limit: "{{ event.payload.change_ticket.title.split(':')[1] | replace(' ', '') }}"
