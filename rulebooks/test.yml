@@ -8,12 +8,13 @@
 
   rules:
     - name: ServiceNow Events
-      condition: event.payload.event_type == "change_request_scheduled"
+      condition: event.payload is defined
       action:
         run_job_template:
-          name: "RHEL ServiceNow - Check for Updates"
+          name: "RHEL Sync SSH Keys"
           organization: Default
           job_args:
-            limit: "{{ event.payload.change_ticket.title.split(':')[1] | replace(' ', '') }}"
+            labels: 
+              - "test"
             extra_vars: 
               data: "{{ event.payload }}"
