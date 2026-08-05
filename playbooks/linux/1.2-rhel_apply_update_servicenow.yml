@@ -49,6 +49,9 @@
       - implement
       - review
     when: dnf_updates is changed
+    retries: 3
+    delay: 10
+    until: result is not faile
     
   - name: Close a ServiceNow change request
     servicenow.itsm.change_request:
