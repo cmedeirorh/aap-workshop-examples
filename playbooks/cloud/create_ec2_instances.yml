@@ -55,6 +55,6 @@
           owner: "{{ owner }}"
           uuid: "{{ owner }}"
       loop: 
-        - instance1
-        - instance2
+        - node1
+        - node2
       register: ec2_result
