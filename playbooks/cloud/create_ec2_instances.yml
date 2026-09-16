@@ -38,7 +38,7 @@
 
     - name: Provision the EC2 instances
       amazon.aws.ec2_instance:
-        name: "{{ item }}-{{ owner }}"
+        name: "{{ item }}-cloud"
         region: "{{ aws_region }}"
         key_name: "{{ ssh_key_name }}"
         vpc_subnet_id: "{{ subnet_info.subnets[0].subnet_id }}"
