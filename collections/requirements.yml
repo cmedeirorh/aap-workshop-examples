@@ -1,2 +1,7 @@
 ---
-collections: []
+collections:
+  - name: amazon.aws
+  - name: cisco.ios
+  - name: servicenow.itsm
+  - name: ansible.windows
+  - name: ansible.eda
