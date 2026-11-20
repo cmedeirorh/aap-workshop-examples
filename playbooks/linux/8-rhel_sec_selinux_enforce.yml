@@ -1,7 +1,7 @@
 ---
 - name: Enable SELinux 
   hosts: all
-  become: yes
+  become: true
  
   tasks:
   - name: Enable SELinux config

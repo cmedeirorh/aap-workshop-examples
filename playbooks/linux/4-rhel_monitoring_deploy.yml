@@ -1,7 +1,7 @@
 ---
 - name: RHEL deploy Zabbix Agent
   hosts: all
-  become: yes
+  become: true
   vars:
     installer_url: 'https://repo.zabbix.com/zabbix/7.4/release/rhel/9/noarch/zabbix-release-latest.el9.noarch.rpm'
     zabbix_server: 'REPLACE_ME'
