@@ -1,7 +1,7 @@
 ---
 - name: Manage postgres using Role (https://github.com/linux-system-roles/postgresql)
   hosts: all
-  become: yes
+  become: true
   vars:
     postgresql_version: "16"
     postgresql_password: "CHANGE_ME"

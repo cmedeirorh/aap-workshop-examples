@@ -1,7 +1,12 @@
 ---
 collections:
   - name: amazon.aws
-  - name: cisco.ios
-  - name: servicenow.itsm
-  - name: ansible.windows
   - name: ansible.eda
+  - name: ansible.netcommon
+  - name: ansible.posix
+  - name: ansible.windows
+  - name: cisco.ios
+  - name: containers.podman
+  - name: fedora.linux_system_roles
+  - name: redhat.insights
+  - name: servicenow.itsm

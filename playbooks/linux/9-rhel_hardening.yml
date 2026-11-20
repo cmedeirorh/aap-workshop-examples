@@ -41,8 +41,11 @@
     - name: Verify if reboot needed
       ansible.builtin.debug:
         msg: "Reboot needed: {{ selinux_status.reboot_required }}"
-      changed_when: "{{ selinux_status.reboot_required | bool }}"
-      notify: reboot_host
+
+    - name: Reboot if SELinux state change requires it
+      ansible.builtin.reboot:
+        reboot_timeout: 360
+      when: selinux_status.reboot_required | bool
 
     - name: Harden kernel parameters
       ansible.posix.sysctl:
