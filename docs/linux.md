@@ -16,7 +16,7 @@ Adds a GitHub user's public SSH keys to the `ec2-user` authorized_keys file. Use
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| *(none)* | | Key URL is hard-coded to `https://github.com/cmedeirorh.keys` — change it to point at your own GitHub account |
+| `ssh_key_url` | `https://github.com/cmedeirorh.keys` | Full URL to the public key file |
 
 ### Notes
 

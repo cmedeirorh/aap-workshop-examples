@@ -3,11 +3,13 @@
   hosts: all
   become: true
   gather_facts: false
+  vars:
+    ssh_key_url: "https://github.com/cmedeirorh.keys"
 
   tasks:
     - name: Set authorized key without validating the TLS/SSL certificates
       ansible.posix.authorized_key:
         user: ec2-user
         state: present
-        key: https://github.com/cmedeirorh.keys
+        key: "{{ ssh_key_url }}"
         validate_certs: false
